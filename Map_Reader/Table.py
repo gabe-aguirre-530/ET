@@ -78,7 +78,7 @@ class Table(QWidget):
         for i, data in enumerate(points):
             self.model.insertRow(i)
             self.model.setData(self.model.index(i, PID), i+1)
-            self.model.setData(self.model.index(i, LAT), data['lat'])
-            self.model.setData(self.model.index(i, LON), data['lon'])
-            self.model.setData(self.model.index(i, DATE), data['date'])
-            self.model.setData(self.model.index(i, DESC), data['desc'])
+            self.model.setData(self.model.index(i, LAT), data['Latitude'])
+            self.model.setData(self.model.index(i, LON), data['Longitude'])
+            self.model.setData(self.model.index(i, DATE), data['Date'])
+            self.model.setData(self.model.index(i, DESC), data['Description'])

@@ -1,7 +1,8 @@
 import sys
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QDateTime
+from PyQt5.QtCore import QDateTime, QDate
+import pandas as pd
 
 import Tracker
 from Table import Table
@@ -19,6 +20,29 @@ class MainWindow(QMainWindow):
         self.units = None
         self.points = []
         
+        menubar = self.menuBar()
+        fileMenu = menubar.addMenu('File')
+        
+        self.exportMenu = QMenu('Export', self)
+        self.exportMenu.setEnabled(False)
+        
+        self.exportCSV = QAction('CSV', self)
+        self.exportMenu.addAction(self.exportCSV)
+        self.exportCSV.triggered.connect(self.exportToCSV)
+
+        self.exportJSON = QAction('JSON', self)
+        self.exportMenu.addAction(self.exportJSON)
+        self.exportJSON.triggered.connect(self.exportToJSON)
+
+        self.exportExcel = QAction('Excel', self)
+        self.exportMenu.addAction(self.exportExcel)
+        self.exportExcel.triggered.connect(self.exportToExcel)
+
+        self.exportHTML = QAction('HTML', self)
+        self.exportMenu.addAction(self.exportHTML)
+        self.exportHTML.triggered.connect(self.exportToHTML)
+
+        fileMenu.addMenu(self.exportMenu)
         self.setCentralWidget(self.table)
         
 
@@ -81,14 +105,42 @@ class MainWindow(QMainWindow):
         '''
         self.locationTracker.close()
         data = {
-            'lat': lat,
-            'lon': lon,
-            'date': QDateTime().currentDateTime(),
-            'desc': desc
+            'Latitude': lat,
+            'Longitude': lon,
+            'Date': QDateTime().currentDateTime().toString('MM-dd-yyyy hh:mm:ss ap'),
+            'Description': desc
         }
         self.points.append(data)
         self.table.update(self.points)
+        self.exportMenu.setEnabled(True)
 
+    def exportToCSV(self):
+        '''
+        Export table data to csv file
+        '''
+        df = pd.DataFrame(self.points)
+        df.to_csv(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.csv')  
+
+    def exportToJSON(self):
+        '''
+        Export table data to json file
+        '''
+        df = pd.DataFrame(self.points)
+        df.to_json(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.json')
+
+    def exportToExcel(self):
+        '''
+        Export table data to excel file
+        '''
+        df = pd.DataFrame(self.points).set_index('Date')
+        df.to_excel(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.xlsx')
+
+    def exportToHTML(self):
+        '''
+        Export table data to html file
+        '''
+        df = pd.DataFrame(self.points)
+        df.to_html(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.html')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
