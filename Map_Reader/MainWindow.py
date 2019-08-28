@@ -5,6 +5,9 @@ from PyQt5.QtCore import QDateTime
 
 import Tracker
 from Table import Table
+from ReferenceWindow import *
+from ScaleWindow import *
+from LocationWindow import *
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -23,7 +26,7 @@ class MainWindow(QMainWindow):
         '''
         Displays window to enter lat/lon of reference point
         '''
-        self.refWindow = Tracker.ReferencePoint(self)
+        self.refWindow = ReferenceWindow(self)
 
     def setReference(self, point):
         '''
@@ -31,11 +34,18 @@ class MainWindow(QMainWindow):
         '''
         self.reference = point
 
-    def scaleWindow(self):
+    def scaleTracker(self):
         '''
         Launches window to trace scale
         '''
-        self.scaleWindow = Tracker.Tracker('scale', self)
+        self.scaleTracker = Tracker.Tracker('scale', self)
+
+    def confirmScale(self, dist_px):
+        '''
+        Launches window to confirm scale data
+        '''
+        self.scaleConfirm = ScaleWindow(dist_px, self)
+        self.scaleConfirm.show()
 
     def setScale(self, scale, units):
         '''
@@ -43,23 +53,33 @@ class MainWindow(QMainWindow):
         '''
         self.scale = scale
         self.units = units
+        self.scaleTracker.close()
 
-    def locatorWindow(self):
+    def locationTracker(self):
         '''
         Launches window to locate new point from reference point
         '''
         if self.reference and self.scale and self.units:
-            self.locatorWindow = Tracker.Tracker( 
-                'locator', 
+            self.locationTracker = Tracker.Tracker( 
+                'location', 
                 self,
                 ref=self.reference, 
                 scale=self.scale, 
                 units=self.units)
 
-    def addLocation(self, lat, lon, desc):
+    def confirmLocation(self, lat, lon):
+        '''
+        Launches window to confirm new point data
+        '''
+        self.locationConfirm = LocationWindow(lat, lon, self)
+        self.locationConfirm.show()
+
+
+    def setLocation(self, lat, lon, desc):
         '''
         Adds location to points list and passes list to Table class to update table data
         '''
+        self.locationTracker.close()
         data = {
             'lat': lat,
             'lon': lon,

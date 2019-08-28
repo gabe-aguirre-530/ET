@@ -7,6 +7,7 @@ import random
 #Define constants for table columns
 PID, LAT, LON, DATE, DESC = range(5)
 
+#Class to layout the table and buttons on the main window
 class Table(QWidget):
     def __init__(self, parent):
         super(Table, self).__init__(parent)
@@ -43,13 +44,13 @@ class Table(QWidget):
         self.addRefButton = QPushButton('Add Reference')
         self.addRefButton.clicked.connect(self.parent().referenceWindow)
         
-        #Add scale button and connect it to scaleWindow() in MainWindow to launch window
+        #Add scale button and connect it to scaleTracker() in MainWindow to launch window
         self.setScaleButton = QPushButton('Set Scale')
-        self.setScaleButton.clicked.connect(self.parent().scaleWindow)
+        self.setScaleButton.clicked.connect(self.parent().scaleTracker)
 
-        #Add locate button and connect it locatorWindow() in MainWindow to launch window
+        #Add locate button and connect it locationTracker() in MainWindow to launch window
         self.locateButton = QPushButton('Locate Point')
-        self.locateButton.clicked.connect(self.parent().locatorWindow)
+        self.locateButton.clicked.connect(self.parent().locationTracker)
 
         #Add all button to horizontal layout
         hLayout.addWidget(self.addRefButton)
