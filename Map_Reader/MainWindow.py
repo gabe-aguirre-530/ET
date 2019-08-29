@@ -6,9 +6,9 @@ import pandas as pd
 
 import Tracker
 from Table import Table
-from ReferenceWindow import *
-from ScaleWindow import *
-from LocationWindow import *
+from ReferenceWindow import ReferenceWindow
+from ScaleWindow import ScaleWindow
+from LocationWindow import LocationWindow
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -22,27 +22,45 @@ class MainWindow(QMainWindow):
         
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('File')
+
+        self.menuSave = QAction("&Save File", self)
+        self.menuSave.setShortcut("Ctrl+S")
+        self.menuSave.setStatusTip('Save File')
+        self.menuSave.triggered.connect(self.saveFile)
+
+        self.menuOpen = QAction("&Open File", self)
+        self.menuOpen.setShortcut("Ctrl+O")
+        self.menuOpen.setStatusTip('Open File')
+        self.menuOpen.triggered.connect(self.openFile)
+
+        self.menuExit = QAction("&Exit", self)
+        self.menuExit.setShortcut("Ctrl+Q")
+        self.menuExit.setStatusTip('Leave The App')
+        self.menuExit.triggered.connect(self.closeApplication)
         
-        self.exportMenu = QMenu('Export', self)
-        self.exportMenu.setEnabled(False)
+        self.menuExport = QMenu('Export', self)
+        self.menuExport.setEnabled(False)
         
         self.exportCSV = QAction('CSV', self)
-        self.exportMenu.addAction(self.exportCSV)
+        self.menuExport.addAction(self.exportCSV)
         self.exportCSV.triggered.connect(self.exportToCSV)
 
         self.exportJSON = QAction('JSON', self)
-        self.exportMenu.addAction(self.exportJSON)
+        self.menuExport.addAction(self.exportJSON)
         self.exportJSON.triggered.connect(self.exportToJSON)
 
         self.exportExcel = QAction('Excel', self)
-        self.exportMenu.addAction(self.exportExcel)
+        self.menuExport.addAction(self.exportExcel)
         self.exportExcel.triggered.connect(self.exportToExcel)
 
         self.exportHTML = QAction('HTML', self)
-        self.exportMenu.addAction(self.exportHTML)
+        self.menuExport.addAction(self.exportHTML)
         self.exportHTML.triggered.connect(self.exportToHTML)
 
-        fileMenu.addMenu(self.exportMenu)
+        fileMenu.addAction(self.menuOpen)
+        fileMenu.addAction(self.menuSave)
+        fileMenu.addMenu(self.menuExport)
+        fileMenu.addAction(self.menuExit)
         self.setCentralWidget(self.table)
         
 
@@ -112,7 +130,32 @@ class MainWindow(QMainWindow):
         }
         self.points.append(data)
         self.table.update(self.points)
-        self.exportMenu.setEnabled(True)
+        self.menuExport.setEnabled(True)
+
+    def saveFile(self):
+        '''
+        '''
+        #TODO
+        print('Save')
+
+    def openFile(self):
+        '''
+        '''
+        #TODO
+        print('Open')
+
+    def closeApplication(self):
+        '''
+        '''
+        choice = QMessageBox.question(
+            self, 
+            'Exit Application',
+            'Are you sure you want to exit?',
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if choice == QMessageBox.Yes:
+            sys.exit()
 
     def exportToCSV(self):
         '''
