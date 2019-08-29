@@ -164,7 +164,7 @@ class MainWindow(QMainWindow):
         df = pd.DataFrame(self.points)
         
         try:
-            df.to_csv(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.csv')   
+            df.to_csv(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.csv', index=False)   
         except:
             self.fileCreatedAlert('CSV', True)	
         else:
@@ -187,10 +187,10 @@ class MainWindow(QMainWindow):
         '''
         Export table data to excel file
         '''
-        df = pd.DataFrame(self.points).set_index('Date')
+        df = pd.DataFrame(self.points)
         
         try:
-            df.to_excel(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.xlsx')
+            df.to_excel(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.xlsx', index=False)
         except:
             self.fileCreatedAlert('Excel', True)
         else:
@@ -203,7 +203,7 @@ class MainWindow(QMainWindow):
         df = pd.DataFrame(self.points)
         
         try:
-            df.to_html(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.html')	
+            df.to_html(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.html', index=False)	
         except:
             self.fileCreatedAlert('HTML', True)
         else:
