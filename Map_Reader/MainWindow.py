@@ -6,9 +6,7 @@ import pandas as pd
 
 import Tracker
 from Table import Table
-from ReferenceWindow import ReferenceWindow
-from ScaleWindow import ScaleWindow
-from LocationWindow import LocationWindow
+from Windows import *
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
