@@ -162,12 +162,11 @@ class MainWindow(QMainWindow):
         Export table data to csv file
         '''
         df = pd.DataFrame(self.points)
+        
         try:
-            df.to_csv(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.csv')
-            
+            df.to_csv(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.csv')   
         except:
-            self.fileCreatedAlert('CSV', True)
-			
+            self.fileCreatedAlert('CSV', True)	
         else:
             self.fileCreatedAlert('CSV')
 
@@ -176,12 +175,11 @@ class MainWindow(QMainWindow):
         Export table data to json file
         '''
         df = pd.DataFrame(self.points)
+        
         try:
             df.to_json(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.json')
-		
         except:
-            self.fileCreatedAlert('JSON', True)
-			
+            self.fileCreatedAlert('JSON', True)	
         else:
             self.fileCreatedAlert('JSON')
 
@@ -190,12 +188,11 @@ class MainWindow(QMainWindow):
         Export table data to excel file
         '''
         df = pd.DataFrame(self.points).set_index('Date')
+        
         try:
             df.to_excel(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.xlsx')
-			
         except:
             self.fileCreatedAlert('Excel', True)
-			
         else:
             self.fileCreatedAlert('Excel')
 
@@ -204,12 +201,11 @@ class MainWindow(QMainWindow):
         Export table data to html file
         '''
         df = pd.DataFrame(self.points)
+        
         try:
-            df.to_html(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.html')
-			
+            df.to_html(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.html')	
         except:
             self.fileCreatedAlert('HTML', True)
-		
         else:
             self.fileCreatedAlert('HTML')
 		
@@ -222,8 +218,7 @@ class MainWindow(QMainWindow):
                 self,
                 'Export File',
                 f'{filetype} file failed to be created'
-            )
-			
+            )	
         else:
             QMessageBox.information(
                 self,

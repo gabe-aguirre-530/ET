@@ -141,7 +141,6 @@ class Tracker(QWidget):
         '''
         try:
             return round(math.sqrt(dx**2 + dy**2), 2)
-
         except:
             return 0
 
@@ -220,13 +219,6 @@ class Tracker(QWidget):
             coords = geodesic(feet=dist).destination(ref, bearing)
     
         return Point(round(coords.latitude, 5), round(coords.longitude, 5))
-
-    def setNewLocation(self, lat, lon, desc):
-        '''
-        Sends data to MainWindow to update points list
-        '''
-        self.parent.addLocation(lat, lon, desc)
-        self.close()
     
     def zeroVariables(self):
         '''
@@ -342,6 +334,5 @@ class Tracker(QWidget):
         '''
         if self.mode == 'scale':
             self.updateForScaleMode()
-
         else:
             self.updateForLocationMode()
