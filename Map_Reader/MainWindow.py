@@ -135,15 +135,43 @@ class MainWindow(QMainWindow):
 
     def saveFile(self):
         '''
+        Saves the project data in json format and writes to a file
         '''
-        #TODO
-        print('Save')
+        filename, _ = QFileDialog.getSaveFileName(self, 'Save File')
+        savestate = {
+            'Reference': self.reference,
+            'Scale': self.scale,
+            'Units': self.units,
+            'Points': self.points
+        }
+
+        if filename != '':
+            with open(filename, 'w') as f:
+                f.write(json.dumps(savestate, indent=2))
 
     def openFile(self):
         '''
+        Opens project data from json file and updates table with new values
         '''
-        #TODO
-        print('Open')
+        filename, _ = QFileDialog.getOpenFileName(self, 'Open File')
+
+        if filename != '':
+            try:
+                with open(filename, 'r') as f:
+                    data = json.loads(f.read())
+            except:
+                QMessageBox.critical(
+                    self,
+                    'File Not Found',
+                    f'{filename} is not supported')
+            else:
+                self.reference = data['Reference']
+                self.scale = data['Scale']
+                self.units = data['Units']
+                self.points = data['Points']
+
+                self.table.update(self.points)
+            
 
     def closeApplication(self):
         '''
