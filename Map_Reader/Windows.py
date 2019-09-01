@@ -101,10 +101,12 @@ class ReferenceWindow(QWidget):
         self.latEdit = QLineEdit()
         self.latEdit.setValidator(QtGui.QDoubleValidator(-90, 90, 5))
         self.latEdit.setPlaceholderText('Latitude')
+        self.latEdit.textChanged.connect(self.checkFields)
 
         self.lonEdit = QLineEdit()
         self.lonEdit.setValidator(QtGui.QDoubleValidator(-180, 180, 5))
         self.lonEdit.setPlaceholderText('Longitude')
+        self.lonEdit.textChanged.connect(self.checkFields)
 
         hLayout.addWidget(self.latEdit)
         hLayout.addWidget(self.lonEdit)
@@ -113,6 +115,7 @@ class ReferenceWindow(QWidget):
         h2Layout = QHBoxLayout()
         self.saveButton = QPushButton('Save')
         self.saveButton.clicked.connect(self.save)
+        self.saveButton.setEnabled(False)
 
         self.cancelButton = QPushButton('Cancel')
         self.cancelButton.clicked.connect(self.cancel)
@@ -126,6 +129,10 @@ class ReferenceWindow(QWidget):
         self.setLayout(mainLayout)
 
         self.show()
+
+    def checkFields(self):
+        if self.lonEdit.text() and self.latEdit.text():
+            self.saveButton.setEnabled(True)
 
     def save(self):
         '''

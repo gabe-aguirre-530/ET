@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.points = []
         
         menubar = self.menuBar()
-        fileMenu = menubar.addMenu('File')
+        self.fileMenu = menubar.addMenu('File')
 
         self.menuSave = QAction("&Save File", self)
         self.menuSave.setShortcut("Ctrl+S")
@@ -55,11 +55,13 @@ class MainWindow(QMainWindow):
         self.menuExport.addAction(self.exportHTML)
         self.exportHTML.triggered.connect(self.exportToHTML)
 
-        fileMenu.addAction(self.menuOpen)
-        fileMenu.addAction(self.menuSave)
-        fileMenu.addMenu(self.menuExport)
-        fileMenu.addAction(self.menuExit)
+        self.fileMenu.addAction(self.menuOpen)
+        self.fileMenu.addAction(self.menuSave)
+        self.fileMenu.addMenu(self.menuExport)
+        self.fileMenu.addAction(self.menuExit)
         self.setCentralWidget(self.table)
+
+        self.show()
         
 
     def referenceWindow(self):
@@ -227,5 +229,4 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = MainWindow()
-    w.show()
     sys.exit(app.exec_())
