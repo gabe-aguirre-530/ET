@@ -3,6 +3,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QDateTime, QDate
 import pandas as pd
+import json
 
 import Tracker
 from Table import Table
@@ -174,10 +175,11 @@ class MainWindow(QMainWindow):
         '''
         Export table data to json file
         '''
-        df = pd.DataFrame(self.points)
+        json_data = json.dumps(self.points, indent=2)
         
         try:
-            df.to_json(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.json')
+            with open(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.json', 'w+') as f:
+                f.write(json_data)
         except:
             self.fileCreatedAlert('JSON', True)	
         else:
