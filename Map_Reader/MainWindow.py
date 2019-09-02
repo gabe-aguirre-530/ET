@@ -21,6 +21,7 @@ class MainWindow(QMainWindow):
         
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('File')
+        self.fileMenu.triggered.connect(self.checkPointsEmpty)
 
         self.menuSave = QAction("&Save File", self)
         self.menuSave.setShortcut("Ctrl+S")
@@ -182,6 +183,15 @@ class MainWindow(QMainWindow):
 
         if choice == QMessageBox.Yes:
             sys.exit()
+
+    def checkPointsEmpty(self):
+        '''
+        Connect to file menu if points has data export option will be enabled
+        '''
+        if self.points:
+            self.menuExport.setEnabled(True)
+        else:
+            self.menuExport.setEnabled(False)
 
     def exportToCSV(self):
         '''
