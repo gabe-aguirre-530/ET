@@ -7,13 +7,12 @@ from collections import namedtuple
 import math
 
 #Class to confirm the scale input data
-class ScaleWindow(QWidget):
+class ScaleWindow(QDialog):
     def __init__(self, dist_px, parent):
-        super(ScaleWindow, self).__init__()
+        super(ScaleWindow, self).__init__(parent)
 
         self.dist_px = dist_px
         self.scale = 1
-        self.parent = parent
 
         self.setFixedSize(300, 100)
         self.setWindowTitle('Scale')
@@ -58,6 +57,7 @@ class ScaleWindow(QWidget):
         mainLayout.addLayout(h2Layout)
     
         self.setLayout(mainLayout)
+        self.show()
 
     def save(self):
         '''
@@ -72,7 +72,7 @@ class ScaleWindow(QWidget):
         #check values entered by user are correct
         if scale > 0 and dist_px > 0:
             pxPerUnit = dist_px / scale
-            self.parent.setScale(pxPerUnit, units)        
+            self.parent().setScale(pxPerUnit, units)        
             self.close()
 
     def cancel(self):
@@ -82,10 +82,9 @@ class ScaleWindow(QWidget):
         self.close()
         
 #Class to confirm the reference point data
-class ReferenceWindow(QWidget):
+class ReferenceWindow(QDialog):
     def __init__(self, parent):
-        super(ReferenceWindow, self).__init__()
-        self.parent = parent
+        super(ReferenceWindow, self).__init__(parent)
         self.setFixedSize(300, 100)
         self.setWindowTitle('Add Reference Point')
         self.initUI()
@@ -144,7 +143,7 @@ class ReferenceWindow(QWidget):
         
         #check values entered by user are correct
         if lat > -90 and lat < 90 and lon > -180 and lon < 180:
-            self.parent.setReference((lat, lon))
+            self.parent().setReference((lat, lon))
             self.close()
 
     def cancel(self):
@@ -154,12 +153,11 @@ class ReferenceWindow(QWidget):
         self.close()
         
 #Class to confirm lat, lon data
-class LocationWindow(QWidget):
+class LocationWindow(QDialog):
     def __init__(self, lat, lon, parent):
-        super(LocationWindow, self).__init__()
+        super(LocationWindow, self).__init__(parent)
         self.lat = lat
         self.lon = lon
-        self.parent = parent
 
         #self.setFixedSize(300, 100)
         self.setWindowTitle('Confirm Location')
@@ -205,6 +203,7 @@ class LocationWindow(QWidget):
         mainLayout.addLayout(h2Layout)
     
         self.setLayout(mainLayout)
+        self.show()
 
     def save(self):
         '''
@@ -218,7 +217,7 @@ class LocationWindow(QWidget):
         
         #check values entered by user are correct
         if lat > -90 and lat < 90 and lon > -180 and lon < 180:
-            self.parent.setLocation(lat, lon, desc)
+            self.parent().setLocation(lat, lon, desc)
             self.close()
 
     def cancel(self):

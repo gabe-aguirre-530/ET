@@ -88,7 +88,6 @@ class MainWindow(QMainWindow):
         Launches window to confirm scale data
         '''
         self.scaleConfirm = ScaleWindow(dist_px, self)
-        self.scaleConfirm.show()
 
     def setScale(self, scale, units):
         '''
@@ -115,8 +114,6 @@ class MainWindow(QMainWindow):
         Launches window to confirm new point data
         '''
         self.locationConfirm = LocationWindow(lat, lon, self)
-        self.locationConfirm.show()
-
 
     def setLocation(self, lat, lon, desc):
         '''

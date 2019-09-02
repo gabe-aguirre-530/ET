@@ -15,17 +15,16 @@ Point = namedtuple('Point', 'x y')
 
 #Tracker class to handle mouse movement for locating point and setting scale
 #Two modes: scale and location
-class Tracker(QWidget):
+class Tracker(QDialog):
     
     def __init__(self, mode, parent, hidden=True, ref=None, scale=None, units=None):
-        super(Tracker, self).__init__()
+        super(Tracker, self).__init__(parent)
 
         if mode not in ['scale', 'location']:
             raise ValueError(mode)
 
         self.ref = ref
         self.mode = mode
-        self.parent = parent
         self.hidden = hidden
         self.scale = scale
         self.units = units
@@ -320,9 +319,9 @@ class Tracker(QWidget):
 
         #Call function to launch windown depending on scale or location mode
         if self.mode == 'scale':
-            self.parent.confirmScale(self.dist_px)
+            self.parent().confirmScale(self.dist_px)
         else:
-            self.parent.confirmLocation(self.newLoc.x, self.newLoc.y)
+            self.parent().confirmLocation(self.newLoc.x, self.newLoc.y)
 
         self.zeroVariables()
         
