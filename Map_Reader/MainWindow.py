@@ -23,6 +23,11 @@ class MainWindow(QMainWindow):
         self.fileMenu = menubar.addMenu('File')
         self.fileMenu.triggered.connect(self.checkPointsEmpty)
 
+        self.menuNew = QAction("&New Project", self)
+        self.menuNew.setShortcut("Ctrl+N")
+        self.menuNew.setStatusTip('New Project')
+        self.menuNew.triggered.connect(self.newProject)
+
         self.menuSave = QAction("&Save File", self)
         self.menuSave.setShortcut("Ctrl+S")
         self.menuSave.setStatusTip('Save File')
@@ -57,6 +62,7 @@ class MainWindow(QMainWindow):
         self.menuExport.addAction(self.exportHTML)
         self.exportHTML.triggered.connect(self.exportToHTML)
 
+        self.fileMenu.addAction(self.menuNew)
         self.fileMenu.addAction(self.menuOpen)
         self.fileMenu.addAction(self.menuSave)
         self.fileMenu.addMenu(self.menuExport)
@@ -169,7 +175,17 @@ class MainWindow(QMainWindow):
                 self.points = data['Points']
 
                 self.table.update(self.points)
-            
+    
+    def newProject(self):
+        '''
+        Create new project by clearing all instance variables
+        '''
+        self.scale = None
+        self.reference = None
+        self.units = None
+        self.points = []
+
+        self.table.update(self.points)
 
     def closeApplication(self):
         '''
