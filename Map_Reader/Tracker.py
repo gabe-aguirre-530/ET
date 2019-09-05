@@ -57,7 +57,7 @@ class Tracker(QDialog):
         dy_px: {self.dy}
         Bearing: {self.bearing}
         Distance_px: {self.dist_px}
-        Distance_{self.units}: {self.dist_km}
+        Distance_{self.units}: {self.dist}
         New Location: {self.newLoc.x, self.newLoc.y}
         '''
 
@@ -225,7 +225,7 @@ class Tracker(QDialog):
         '''
         self.dx = 0
         self.dy = 0
-        self.dist_km = 0
+        self.dist = 0
         self.dist_px = 0
         self.bearing = 0
         self.newLoc = Point(0, 0)
@@ -273,8 +273,8 @@ class Tracker(QDialog):
         #Update bearing, distance in pixels, distance in units, and the new location
         self.bearing = self.getBearing(self.dx + dx_px, self.dy + dy_px)
         self.dist_px = self.getDistance(self.dx + dx_px, self.dy + dy_px)
-        self.dist_km = self.convert(self.dist_px, self.scale)
-        self.newLoc = self.newLocation(self.ref, self.dist_km, self.bearing)
+        self.dist = self.convert(self.dist_px, self.scale)
+        self.newLoc = self.newLocation(self.ref, self.dist, self.bearing)
             
         #Check if cursor is within window boundaries
         #Only update dx, dy instance variables when border has been reached
@@ -290,7 +290,7 @@ class Tracker(QDialog):
         dy_px: {self.dy + dy_px}
         Bearing: {self.bearing}
         Distance_px: {round(self.dist_px, 2)}
-        Distance_{self.units}: {self.dist_km}
+        Distance_{self.units}: {self.dist}
         New Location: {self.newLoc.x, self.newLoc.y}
         '''
         self.label.setText(results)
@@ -321,7 +321,7 @@ class Tracker(QDialog):
         if self.mode == 'scale':
             self.parent().confirmScale(self.dist_px)
         else:
-            self.parent().confirmLocation(self.newLoc.x, self.newLoc.y)
+            self.parent().confirmLocation(self.newLoc.x, self.newLoc.y, self.dist, self.bearing, self.units)
 
         self.zeroVariables()
         

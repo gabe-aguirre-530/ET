@@ -154,10 +154,13 @@ class ReferenceWindow(QDialog):
         
 #Class to confirm lat, lon data
 class LocationWindow(QDialog):
-    def __init__(self, lat, lon, parent):
+    def __init__(self, lat, lon, dist, bearing, units, parent):
         super(LocationWindow, self).__init__(parent)
         self.lat = lat
         self.lon = lon
+        self.dist = dist
+        self.bearing = bearing
+        self.units = units
 
         #self.setFixedSize(300, 100)
         self.setWindowTitle('Confirm Location')
@@ -187,20 +190,34 @@ class LocationWindow(QDialog):
         self.descBox.setFixedHeight(100)
         self.descBox.setPlaceholderText('Description')
 
+        h2Layout = QHBoxLayout() 
+
+        self.distEdit = QLineEdit(str(self.dist))
+        self.distEdit.setValidator(QtGui.QDoubleValidator(0.1, 100000000, 5)) 
+        self.bearingEdit = QLineEdit(str(self.bearing))
+        self.bearingEdit.setValidator(QtGui.QDoubleValidator(0, 360, 5))
+
+        h2Layout.addWidget(QLabel(f'Distance ({self.units}):'))
+        h2Layout.addWidget(self.distEdit)
+
+        h2Layout.addWidget(QLabel('Bearing:'))
+        h2Layout.addWidget(self.bearingEdit)
+
         #horizontal layout containing save and cancel buttons
-        h2Layout = QHBoxLayout()
+        h3Layout = QHBoxLayout()
         self.saveButton = QPushButton('Save')
         self.saveButton.clicked.connect(self.save)
 
         self.cancelButton = QPushButton('Cancel')
         self.cancelButton.clicked.connect(self.cancel)
 
-        h2Layout.addWidget(self.saveButton)
-        h2Layout.addWidget(self.cancelButton)
+        h3Layout.addWidget(self.saveButton)
+        h3Layout.addWidget(self.cancelButton)
 
         mainLayout.addLayout(hLayout)
-        mainLayout.addWidget(self.descBox)
         mainLayout.addLayout(h2Layout)
+        mainLayout.addWidget(self.descBox)
+        mainLayout.addLayout(h3Layout)
     
         self.setLayout(mainLayout)
         self.show()
@@ -214,10 +231,13 @@ class LocationWindow(QDialog):
         lat = eval(self.latEdit.text())
         lon = eval(self.lonEdit.text())
         desc = self.descBox.toPlainText()
+        dist = eval(self.distEdit.text())
+        bearing = eval(self.bearingEdit.text())
+        units = self.units
         
         #check values entered by user are correct
         if lat > -90 and lat < 90 and lon > -180 and lon < 180:
-            self.parent().setLocation(lat, lon, desc)
+            self.parent().setLocation(lat, lon, desc, dist, bearing, units)
             self.close()
 
     def cancel(self):

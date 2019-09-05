@@ -10,33 +10,40 @@ from Table import Table
 from Windows import *
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, projectName, parent, reference=None, createdDate=None, openExisting=False):
         super(MainWindow, self).__init__(parent)
         self.setFixedSize(1080, 768)
+        self.projectName = projectName
         self.table = Table(self)
         self.scale = None
-        self.reference = None
+        self.reference = reference
         self.units = None
         self.points = []
+        self.savedPoints = []
+        self.createdDate = createdDate
         
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('File')
-        self.fileMenu.triggered.connect(self.checkPointsEmpty)
 
-        self.menuNew = QAction("&New Project", self)
+        self.menuNew = QAction("&New", self)
         self.menuNew.setShortcut("Ctrl+N")
         self.menuNew.setStatusTip('New Project')
         self.menuNew.triggered.connect(self.newProject)
 
-        self.menuSave = QAction("&Save File", self)
+        self.menuSave = QAction("&Save", self)
         self.menuSave.setShortcut("Ctrl+S")
         self.menuSave.setStatusTip('Save File')
         self.menuSave.triggered.connect(self.saveFile)
 
-        self.menuOpen = QAction("&Open File", self)
+        self.menuOpen = QAction("&Open", self)
         self.menuOpen.setShortcut("Ctrl+O")
         self.menuOpen.setStatusTip('Open File')
         self.menuOpen.triggered.connect(self.openFile)
+
+        self.menuClose = QAction("&Close", self)
+        self.menuClose.setShortcut("Ctrl+E")
+        self.menuClose.setStatusTip('Close File')
+        self.menuClose.triggered.connect(self.closeFile)
 
         self.menuExit = QAction("&Exit", self)
         self.menuExit.setShortcut("Ctrl+Q")
@@ -66,10 +73,18 @@ class MainWindow(QMainWindow):
         self.fileMenu.addAction(self.menuOpen)
         self.fileMenu.addAction(self.menuSave)
         self.fileMenu.addMenu(self.menuExport)
+        self.fileMenu.addAction(self.menuClose)
         self.fileMenu.addAction(self.menuExit)
         self.setCentralWidget(self.table)
 
+        #Open existing json file containing all data
+        if openExisting:
+            self.openExistingProject(self.projectName)
+
         self.show()
+    
+    def setProjectName(self, name):
+        self.projectName = name
         
 
     def referenceWindow(self):
@@ -116,13 +131,13 @@ class MainWindow(QMainWindow):
                 scale=self.scale, 
                 units=self.units)
 
-    def confirmLocation(self, lat, lon):
+    def confirmLocation(self, lat, lon, dist, bearing, units):
         '''
         Launches window to confirm new point data
         '''
-        self.locationConfirm = LocationWindow(lat, lon, self)
+        self.locationConfirm = LocationWindow(lat, lon, dist, bearing, units, self)
 
-    def setLocation(self, lat, lon, desc):
+    def setLocation(self, lat, lon, desc, dist, bearing, units):
         '''
         Adds location to points list and passes list to Table class to update table data
         '''
@@ -131,7 +146,12 @@ class MainWindow(QMainWindow):
             'Latitude': lat,
             'Longitude': lon,
             'Date': QDateTime().currentDateTime().toString('MM-dd-yyyy hh:mm:ss ap'),
-            'Description': desc
+            'Description': desc,
+            'Distance': dist,
+            'Bearing': bearing,
+            'Units': units,
+            'ReferencePoint': self.reference,
+            'Scale': self.scale
         }
         self.points.append(data)
         self.table.update(self.points)
@@ -141,51 +161,67 @@ class MainWindow(QMainWindow):
         '''
         Saves the project data in json format and writes to a file
         '''
-        filename, _ = QFileDialog.getSaveFileName(self, 'Save File')
         savestate = {
+            'ProjectName': self.projectName,
+            'Created': self.createdDate,
+            'LastAccessed': QDateTime().currentDateTime().toString('MM-dd-yyyy hh:mm:ss ap'),
             'Reference': self.reference,
             'Scale': self.scale,
             'Units': self.units,
             'Points': self.points
         }
 
-        if filename != '':
-            with open(filename, 'w') as f:
-                f.write(json.dumps(savestate, indent=2))
+        with open(f'./Projects/{self.projectName}/project_data.json', 'w+') as f:
+            f.write(json.dumps(savestate, indent=2))
+
+        QMessageBox.information(
+                    self,
+                    'Project Saved',
+                    f'{self.projectName} has been successfully saved')
 
     def openFile(self):
         '''
-        Opens project data from json file and updates table with new values
+        Calls parent to open new project
         '''
-        filename, _ = QFileDialog.getOpenFileName(self, 'Open File')
+        self.parent().open()
 
-        if filename != '':
+    def openExistingProject(self, projectName):
+        '''
+        Populates table with existing project data from given project
+        '''
+
+        if projectName != '':
             try:
-                with open(filename, 'r') as f:
+                with open(f'{projectName}/project_data.json', 'r') as f:
                     data = json.loads(f.read())
             except:
                 QMessageBox.critical(
                     self,
                     'File Not Found',
-                    f'{filename} is not supported')
+                    f'{projectName} is not supported')
             else:
+                self.projectName = data['ProjectName']
+                self.createdDate = data['Created']
                 self.reference = data['Reference']
                 self.scale = data['Scale']
                 self.units = data['Units']
                 self.points = data['Points']
 
-                self.table.update(self.points)
+        if self.points:
+            self.menuExport.setEnabled(True)
+            self.table.update(self.points)
     
     def newProject(self):
         '''
         Create new project by clearing all instance variables
         '''
-        self.scale = None
-        self.reference = None
-        self.units = None
-        self.points = []
-
-        self.table.update(self.points)
+        self.parent().new()
+    
+    def closeFile(self):
+        '''
+        Return to starter screen in parent window
+        '''
+        self.parent().starterScreen(closeMW=True)
 
     def closeApplication(self):
         '''
@@ -200,15 +236,6 @@ class MainWindow(QMainWindow):
         if choice == QMessageBox.Yes:
             sys.exit()
 
-    def checkPointsEmpty(self):
-        '''
-        Connect to file menu if points has data export option will be enabled
-        '''
-        if self.points:
-            self.menuExport.setEnabled(True)
-        else:
-            self.menuExport.setEnabled(False)
-
     def exportToCSV(self):
         '''
         Export table data to csv file
@@ -216,7 +243,7 @@ class MainWindow(QMainWindow):
         df = pd.DataFrame(self.points)
         
         try:
-            df.to_csv(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.csv', index=False)   
+            df.to_csv(f'./Projects/{self.projectName}/Reports/{QDate.currentDate().toString("MM-dd-yy")}_Report.csv', index=False)   
         except:
             self.fileCreatedAlert('CSV', True)	
         else:
@@ -229,7 +256,7 @@ class MainWindow(QMainWindow):
         json_data = json.dumps(self.points, indent=2)
         
         try:
-            with open(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.json', 'w+') as f:
+            with open(f'./Projects/{self.projectName}/Reports/{QDate.currentDate().toString("MM-dd-yy")}_Report.json', 'w+') as f:
                 f.write(json_data)
         except:
             self.fileCreatedAlert('JSON', True)	
@@ -243,7 +270,7 @@ class MainWindow(QMainWindow):
         df = pd.DataFrame(self.points)
         
         try:
-            df.to_excel(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.xlsx', index=False)
+            df.to_excel(f'./Projects/{self.projectName}/Reports/{QDate.currentDate().toString("MM-dd-yy")}_Report.xlsx', index=False)
         except:
             self.fileCreatedAlert('Excel', True)
         else:
@@ -256,7 +283,7 @@ class MainWindow(QMainWindow):
         df = pd.DataFrame(self.points)
         
         try:
-            df.to_html(f'{QDate.currentDate().toString("MM-dd-yy")}_Report.html', index=False)	
+            df.to_html(f'./Projects/{self.projectName}/Reports/{QDate.currentDate().toString("MM-dd-yy")}_Report.html', index=False)	
         except:
             self.fileCreatedAlert('HTML', True)
         else:
@@ -278,8 +305,3 @@ class MainWindow(QMainWindow):
                 'Export File',
                 f'{filetype} file was successfully created'
             )
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    w = MainWindow()
-    sys.exit(app.exec_())
