@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtCore import Qt, QDateTime
-from PyQt5.QtWidgets import *
-from PyQt5 import QtGui
+from PyQt5.QtWidgets import QGridLayout, QLabel, QApplication, QDialog
+from PyQt5.QtGui import QCursor, QFont
 from geopy.distance import geodesic
 from collections import namedtuple
 import math
@@ -31,7 +31,7 @@ class Tracker(QDialog):
 
         self.zeroVariables()
            
-        self.cursor = QtGui.QCursor()
+        self.cursor = QCursor()
         self.initUI()
         
         
@@ -62,7 +62,7 @@ class Tracker(QDialog):
         '''
 
         #Increase font size and set window dimensions
-        font = QtGui.QFont()
+        font = QFont()
         font.setPointSize(14)
         self.label = QLabel(results, self)
         self.label.setFont(font)          

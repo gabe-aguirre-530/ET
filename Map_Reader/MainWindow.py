@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QAction, QMainWindow, QMessageBox, QMenu
 from PyQt5.QtCore import QDateTime, QDate
 import pandas as pd
 import json

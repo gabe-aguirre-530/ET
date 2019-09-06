@@ -1,8 +1,5 @@
 from MainWindow import MainWindow
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import *
-import time
-import sys
 import pytest
 
 @pytest.fixture

@@ -1,10 +1,6 @@
-import sys
 from PyQt5.QtCore import Qt, QDateTime, QRegExp
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
-from geopy.distance import geodesic
-from collections import namedtuple
-import math
 
 #Class to display new project wizard
 class NewProjectWizard(QWizard):

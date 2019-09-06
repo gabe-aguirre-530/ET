@@ -1,10 +1,7 @@
-import sys
-from PyQt5.QtCore import Qt, QDateTime
 from PyQt5.QtWidgets import *
-from PyQt5 import QtGui
+from PyQt5.QtGui import QDoubleValidator
 from geopy.distance import geodesic
 from collections import namedtuple
-import math
 
 #Class to confirm the scale input data
 class ScaleWindow(QDialog):
@@ -27,9 +24,9 @@ class ScaleWindow(QDialog):
         #horizontal layout containing lineedits, unit selector, and label
         hLayout = QHBoxLayout() 
         self.pixelEdit = QLineEdit(str(self.dist_px))
-        self.pixelEdit.setValidator(QtGui.QDoubleValidator(0.99, 1000.00, 2)) 
+        self.pixelEdit.setValidator(QDoubleValidator(0.99, 1000.00, 2)) 
         self.scaleEdit = QLineEdit(str(self.scale))
-        self.scaleEdit.setValidator(QtGui.QDoubleValidator(0.99, 1000.00, 2))    
+        self.scaleEdit.setValidator(QDoubleValidator(0.99, 1000.00, 2))    
 
         label = QLabel('Pixels:')
 
@@ -98,12 +95,12 @@ class ReferenceWindow(QDialog):
         #horizontal layout containing lineedits, unit selector, and label
         hLayout = QHBoxLayout() 
         self.latEdit = QLineEdit()
-        self.latEdit.setValidator(QtGui.QDoubleValidator(-90, 90, 5))
+        self.latEdit.setValidator(QDoubleValidator(-90, 90, 5))
         self.latEdit.setPlaceholderText('Latitude')
         self.latEdit.textChanged.connect(self.checkFields)
 
         self.lonEdit = QLineEdit()
-        self.lonEdit.setValidator(QtGui.QDoubleValidator(-180, 180, 5))
+        self.lonEdit.setValidator(QDoubleValidator(-180, 180, 5))
         self.lonEdit.setPlaceholderText('Longitude')
         self.lonEdit.textChanged.connect(self.checkFields)
 
@@ -175,9 +172,9 @@ class LocationWindow(QDialog):
         #horizontal layout containing lineedits, unit selector, and label
         hLayout = QHBoxLayout() 
         self.latEdit = QLineEdit(str(self.lat))
-        self.latEdit.setValidator(QtGui.QDoubleValidator(-90, 90, 5)) 
+        self.latEdit.setValidator(QDoubleValidator(-90, 90, 5)) 
         self.lonEdit = QLineEdit(str(self.lon))
-        self.lonEdit.setValidator(QtGui.QDoubleValidator(-180, 180, 5))    
+        self.lonEdit.setValidator(QDoubleValidator(-180, 180, 5))    
 
         hLayout.addWidget(QLabel('Lat:'))
         hLayout.addWidget(self.latEdit)
@@ -193,9 +190,9 @@ class LocationWindow(QDialog):
         h2Layout = QHBoxLayout() 
 
         self.distEdit = QLineEdit(str(self.dist))
-        self.distEdit.setValidator(QtGui.QDoubleValidator(0.1, 100000000, 5)) 
+        self.distEdit.setValidator(QDoubleValidator(0.1, 100000000, 5)) 
         self.bearingEdit = QLineEdit(str(self.bearing))
-        self.bearingEdit.setValidator(QtGui.QDoubleValidator(0, 360, 5))
+        self.bearingEdit.setValidator(QDoubleValidator(0, 360, 5))
 
         h2Layout.addWidget(QLabel(f'Distance ({self.units}):'))
         h2Layout.addWidget(self.distEdit)
