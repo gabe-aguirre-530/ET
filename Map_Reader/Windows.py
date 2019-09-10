@@ -30,7 +30,7 @@ class ScaleWindow(QDialog):
 
         label = QLabel('Pixels:')
 
-        units = ['km', 'm', 'ft', 'nm']
+        units = ['km', 'm', 'ft', 'mi']
         self.comboBox = QComboBox()
         self.comboBox.addItems(units)
 
