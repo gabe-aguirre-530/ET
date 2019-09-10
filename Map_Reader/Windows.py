@@ -24,9 +24,11 @@ class ScaleWindow(QDialog):
         #horizontal layout containing lineedits, unit selector, and label
         hLayout = QHBoxLayout() 
         self.pixelEdit = QLineEdit(str(self.dist_px))
-        self.pixelEdit.setValidator(QDoubleValidator(0.99, 1000.00, 2)) 
+        self.pixelEdit.setValidator(QDoubleValidator(0.99, 1000.00, 2))
+        self.pixelEdit.textChanged.connect(self.checkFields)
         self.scaleEdit = QLineEdit(str(self.scale))
-        self.scaleEdit.setValidator(QDoubleValidator(0.99, 1000.00, 2))    
+        self.scaleEdit.setValidator(QDoubleValidator(0.99, 1000.00, 2))
+        self.scaleEdit.textChanged.connect(self.checkFields)
 
         label = QLabel('Pixels:')
 
@@ -54,7 +56,17 @@ class ScaleWindow(QDialog):
         mainLayout.addLayout(h2Layout)
     
         self.setLayout(mainLayout)
+        self.setModal(True)
         self.show()
+
+    def checkFields(self):
+        '''
+        Check if all mandatory fields are entered
+        '''
+        if self.pixelEdit.text() and self.scaleEdit.text():
+            self.saveButton.setEnabled(True)
+        else:
+            self.saveButton.setEnabled(False)
 
     def save(self):
         '''
@@ -123,10 +135,13 @@ class ReferenceWindow(QDialog):
         mainLayout.addLayout(h2Layout)
     
         self.setLayout(mainLayout)
-
+        self.setModal(True)
         self.show()
 
     def checkFields(self):
+        '''
+        Check if all mandatory fields are entered
+        '''
         if self.lonEdit.text() and self.latEdit.text():
             self.saveButton.setEnabled(True)
 
@@ -173,8 +188,10 @@ class LocationWindow(QDialog):
         hLayout = QHBoxLayout() 
         self.latEdit = QLineEdit(str(self.lat))
         self.latEdit.setValidator(QDoubleValidator(-90, 90, 5)) 
+        self.latEdit.textChanged.connect(self.checkFields)
         self.lonEdit = QLineEdit(str(self.lon))
-        self.lonEdit.setValidator(QDoubleValidator(-180, 180, 5))    
+        self.lonEdit.setValidator(QDoubleValidator(-180, 180, 5))   
+        self.lonEdit.textChanged.connect(self.checkFields)
 
         hLayout.addWidget(QLabel('Lat:'))
         hLayout.addWidget(self.latEdit)
@@ -191,8 +208,10 @@ class LocationWindow(QDialog):
 
         self.distEdit = QLineEdit(str(self.dist))
         self.distEdit.setValidator(QDoubleValidator(0.1, 100000000, 5)) 
+        self.distEdit.textChanged.connect(self.checkFields)
         self.bearingEdit = QLineEdit(str(self.bearing))
         self.bearingEdit.setValidator(QDoubleValidator(0, 360, 5))
+        self.bearingEdit.textChanged.connect(self.checkFields)
 
         h2Layout.addWidget(QLabel(f'Distance ({self.units}):'))
         h2Layout.addWidget(self.distEdit)
@@ -217,7 +236,20 @@ class LocationWindow(QDialog):
         mainLayout.addLayout(h3Layout)
     
         self.setLayout(mainLayout)
+        self.setModal(True)
         self.show()
+
+    def checkFields(self):
+        '''
+        Check if all mandatory fields are entered
+        '''
+        mandatoryFields = [self.latEdit, self.lonEdit, self.distEdit, self.bearingEdit]
+
+        if all(t.text() for t in mandatoryFields):
+            self.saveButton.setEnabled(True)
+        else:
+            self.saveButton.setEnabled(False)
+
 
     def save(self):
         '''
