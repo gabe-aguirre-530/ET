@@ -156,6 +156,7 @@ class MainWindow(QMainWindow):
         self.points.append(data)
         self.table.update(self.points)
         self.menuExport.setEnabled(True)
+        self.saveFile()
 
     def saveFile(self):
         '''
@@ -174,10 +175,10 @@ class MainWindow(QMainWindow):
         with open(f'./Projects/{self.projectName}/project_data.json', 'w+') as f:
             f.write(json.dumps(savestate, indent=2))
 
-        QMessageBox.information(
-                    self,
-                    'Project Saved',
-                    f'{self.projectName} has been successfully saved')
+        #QMessageBox.information(
+        #            self,
+        #            'Project Saved',
+        #            f'{self.projectName} has been successfully saved')
 
     def openFile(self):
         '''

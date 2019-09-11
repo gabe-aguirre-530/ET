@@ -72,7 +72,8 @@ class Tracker(QDialog):
         self.setFixedSize(1080, 768)
 
         self.setWindowTitle(self.mode)
-        self.show()
+        self.showFullScreen()
+    
         
     def getCenter(self):
         '''
