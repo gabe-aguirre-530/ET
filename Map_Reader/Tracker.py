@@ -69,11 +69,9 @@ class Tracker(QDialog):
         grid.addWidget(self.label, 0, 0, Qt.AlignTop)
         self.setLayout(grid)
 
-        self.setFixedSize(1080, 768)
-
         self.setWindowTitle(self.mode)
+        self.setModal(True)
         self.showFullScreen()
-    
         
     def getCenter(self):
         '''
@@ -246,7 +244,7 @@ class Tracker(QDialog):
             
         #Check if cursor is within window boundaries
         #Only update dx, dy instance variables when border has been reached
-        if not geo.contains(cur.pos()):
+        if any(x in (cur.pos().x(), cur.pos().y()) for x in [0, geo.width()-1, geo.height()-1]):
             self.dx += dx_px
             self.dy += dy_px
             cur.setPos(center.x, center.y)
@@ -276,10 +274,11 @@ class Tracker(QDialog):
         self.dist_px = self.getDistance(self.dx + dx_px, self.dy + dy_px)
         self.dist = self.convert(self.dist_px, self.scale)
         self.newLoc = self.newLocation(self.ref, self.dist, self.bearing)
-            
+        print('cursor pos:', cur.pos())
+        print('width, height: ', geo.height(), geo.width())
         #Check if cursor is within window boundaries
         #Only update dx, dy instance variables when border has been reached
-        if not geo.contains(cur.pos()):
+        if any(x in (cur.pos().x(), cur.pos().y()) for x in [0, geo.width()-1, geo.height()-1]):
             self.dx += dx_px
             self.dy += dy_px
             cur.setPos(center.x, center.y)
@@ -306,7 +305,7 @@ class Tracker(QDialog):
         self.cursor.setPos(center.x, center.y)
                 
         if self.hidden:
-            QApplication.setOverrideCursor(Qt.BlankCursor)
+            QApplication.setOverrideCursor(Qt.CrossCursor)
         else:
             QApplication.setOverrideCursor(Qt.CrossCursor)
     
