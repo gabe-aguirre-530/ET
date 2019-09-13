@@ -6,6 +6,8 @@ from geopy.distance import geodesic
 from collections import namedtuple
 import math
 
+from MouseController import MouseController
+
 #Dependencies
 #PyQt5: conda install -c anaconda pyqt 
 #geopy: conda install -c conda-forge geopy
@@ -17,7 +19,7 @@ Point = namedtuple('Point', 'x y')
 #Two modes: scale and location
 class Tracker(QDialog):
     
-    def __init__(self, mode, parent, hidden=True, ref=None, scale=None, units=None):
+    def __init__(self, mode, parent=None, hidden=True, ref=None, scale=None, units=None):
         super(Tracker, self).__init__(parent)
 
         if mode not in ['scale', 'location']:
@@ -28,6 +30,8 @@ class Tracker(QDialog):
         self.hidden = hidden
         self.scale = scale
         self.units = units
+        self.mouseController = MouseController()
+        self.origMouseSpeed = self.mouseController.getSpeed()
 
         self.zeroVariables()
            
@@ -138,7 +142,7 @@ class Tracker(QDialog):
             Total distance
         '''
         try:
-            return round(math.sqrt(dx**2 + dy**2), 2)
+            return round(math.sqrt(dx**2 + dy**2), 4)
         except:
             return 0
 
@@ -165,7 +169,7 @@ class Tracker(QDialog):
             #shift bearing so 0 degrees is now grid north
             bearing = (360 + (90 - bearing)) % 360
 
-            return round(bearing, 2)
+            return round(bearing, 4)
     
     def convert(self, dist, scale):
         '''
@@ -187,7 +191,7 @@ class Tracker(QDialog):
             return 1
 
         else:
-            return round(convDist, 2)
+            return round(convDist, 4)
     
     def newLocation(self, ref, dist, bearing):
         '''
@@ -274,8 +278,7 @@ class Tracker(QDialog):
         self.dist_px = self.getDistance(self.dx + dx_px, self.dy + dy_px)
         self.dist = self.convert(self.dist_px, self.scale)
         self.newLoc = self.newLocation(self.ref, self.dist, self.bearing)
-        print('cursor pos:', cur.pos())
-        print('width, height: ', geo.height(), geo.width())
+       
         #Check if cursor is within window boundaries
         #Only update dx, dy instance variables when border has been reached
         if any(x in (cur.pos().x(), cur.pos().y()) for x in [0, geo.width()-1, geo.height()-1]):
@@ -303,9 +306,12 @@ class Tracker(QDialog):
         '''
         center = self.getCenter()
         self.cursor.setPos(center.x, center.y)
+
+        #Max out mouse pointer speed
+        self.mouseController.setSpeed(20)
                 
         if self.hidden:
-            QApplication.setOverrideCursor(Qt.CrossCursor)
+            QApplication.setOverrideCursor(Qt.BlankCursor)
         else:
             QApplication.setOverrideCursor(Qt.CrossCursor)
     
@@ -317,11 +323,15 @@ class Tracker(QDialog):
         #restore cursor type and zero out variables
         QApplication.restoreOverrideCursor()
 
+        #Reset mouse speed to original setting
+        self.mouseController.setSpeed(self.origMouseSpeed)
+
         #Call function to launch windown depending on scale or location mode
-        if self.mode == 'scale':
-            self.parent().confirmScale(self.dist_px)
-        else:
-            self.parent().confirmLocation(self.newLoc.x, self.newLoc.y, self.dist, self.bearing, self.units)
+        if self.parent():
+            if self.mode == 'scale':
+                self.parent().confirmScale(self.dist_px)
+            else:
+                self.parent().confirmLocation(self.newLoc.x, self.newLoc.y, self.dist, self.bearing, self.units)
 
         self.zeroVariables()
         
@@ -335,3 +345,15 @@ class Tracker(QDialog):
             self.updateForScaleMode()
         else:
             self.updateForLocationMode()
+
+if __name__ == '__main__':
+    import sys
+
+    app = QApplication(sys.argv)
+    window = Tracker(
+        'location', 
+        ref=(38.0, -120.0), 
+        scale=131.5, 
+        units='km'
+    )
+    sys.exit(app.exec_())

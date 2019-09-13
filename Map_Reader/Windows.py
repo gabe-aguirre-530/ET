@@ -5,7 +5,7 @@ from collections import namedtuple
 
 #Class to confirm the scale input data
 class ScaleWindow(QDialog):
-    def __init__(self, dist_px, parent):
+    def __init__(self, dist_px, parent=None):
         super(ScaleWindow, self).__init__(parent)
 
         self.dist_px = dist_px
@@ -79,9 +79,12 @@ class ScaleWindow(QDialog):
         units = self.comboBox.currentText()
         
         #check values entered by user are correct
+        
         if scale > 0 and dist_px > 0:
             pxPerUnit = dist_px / scale
-            self.parent().setScale(pxPerUnit, units)        
+            if self.parent():
+                self.parent().setScale(pxPerUnit, units) 
+
             self.close()
 
     def cancel(self):
@@ -92,7 +95,7 @@ class ScaleWindow(QDialog):
         
 #Class to confirm the reference point data
 class ReferenceWindow(QDialog):
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super(ReferenceWindow, self).__init__(parent)
         self.setFixedSize(300, 100)
         self.setWindowTitle('Add Reference Point')
@@ -155,7 +158,9 @@ class ReferenceWindow(QDialog):
         
         #check values entered by user are correct
         if lat > -90 and lat < 90 and lon > -180 and lon < 180:
-            self.parent().setReference((lat, lon))
+
+            if self.parent():
+                self.parent().setReference((lat, lon))
             self.close()
 
     def cancel(self):
@@ -166,7 +171,7 @@ class ReferenceWindow(QDialog):
         
 #Class to confirm lat, lon data
 class LocationWindow(QDialog):
-    def __init__(self, lat, lon, dist, bearing, units, parent):
+    def __init__(self, lat, lon, dist, bearing, units, parent=None):
         super(LocationWindow, self).__init__(parent)
         self.lat = lat
         self.lon = lon
@@ -266,7 +271,10 @@ class LocationWindow(QDialog):
         
         #check values entered by user are correct
         if lat > -90 and lat < 90 and lon > -180 and lon < 180:
-            self.parent().setLocation(lat, lon, desc, dist, bearing, units)
+
+            if self.parent():
+                self.parent().setLocation(lat, lon, desc, dist, bearing, units)
+
             self.close()
 
     def cancel(self):
@@ -274,3 +282,11 @@ class LocationWindow(QDialog):
         Return to mouse tracker screen if cancel button is clicked
         '''
         self.close()
+
+if __name__=='__main__':
+    import sys
+
+    app = QApplication(sys.argv)
+    window = ReferenceWindow()
+    sys.exit(app.exec_())
+
