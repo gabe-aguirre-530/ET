@@ -1,5 +1,7 @@
 import ctypes
 
+#https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa
+
 class MouseController():
     def setSpeed(self, speed):
         #   1 - slow
@@ -13,4 +15,10 @@ class MouseController():
         speed = ctypes.c_int()
         ctypes.windll.user32.SystemParametersInfoA(get_mouse_speed, 0, ctypes.byref(speed), 0)
 
-        return speed.value
+        return speed.value 
+
+    def toggleAcceleration(self, b):
+        arr = [0, 0, int(b)]
+        mouse_params = (ctypes.c_int * len(arr))(*arr)
+        set_mouse = 4   # 0x0004 for SPI_SETMOUSE
+        ctypes.windll.user32.SystemParametersInfoA(set_mouse, 0, mouse_params, 0)

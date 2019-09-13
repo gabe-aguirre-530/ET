@@ -309,6 +309,9 @@ class Tracker(QDialog):
 
         #Max out mouse pointer speed
         self.mouseController.setSpeed(20)
+
+        #turn mouse acceleration off
+        self.mouseController.toggleAcceleration(False)
                 
         if self.hidden:
             QApplication.setOverrideCursor(Qt.BlankCursor)
@@ -325,6 +328,9 @@ class Tracker(QDialog):
 
         #Reset mouse speed to original setting
         self.mouseController.setSpeed(self.origMouseSpeed)
+
+        #Reset mouse acceleration
+        self.mouseController.toggleAcceleration(True)
 
         #Call function to launch windown depending on scale or location mode
         if self.parent():
