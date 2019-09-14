@@ -45,33 +45,14 @@ class Tracker(QDialog):
         '''      
         grid = QGridLayout()
 
-        #Simplified label for scale mode
-        if self.mode == 'scale':
-            results = f'''
-        dx_px: 0
-        dy_px: 0
-        Distance_px: 0
-        '''
-
-        #Label for location mode
-        if self.mode == 'location':
-            results = f'''
-        Ref Point: {self.ref}
-        dx_px: {self.dx}
-        dy_px: {self.dy}
-        Bearing: {self.bearing}
-        Distance_px: {self.dist_px}
-        Distance_{self.units}: {self.dist}
-        New Location: {self.newLoc.x, self.newLoc.y}
-        '''
-
         #Increase font size and set window dimensions
         font = QFont()
         font.setPointSize(14)
-        self.label = QLabel(results, self)
+        self.label = QLabel()
         self.label.setFont(font)          
         grid.addWidget(self.label, 0, 0, Qt.AlignTop)
         self.setLayout(grid)
+        self.updateLabel(0, 0)
 
         self.setWindowTitle(self.mode)
         self.setModal(True)
@@ -233,9 +214,25 @@ class Tracker(QDialog):
         self.bearing = 0
         self.newLoc = Point(0, 0)
 
-    def updateForScaleMode(self):
+    def updateLabel(self, dx_px, dy_px):
         '''
-        Tracks current x and y distance and updates label for scale mode
+        Constantly update data on window label
+        '''
+        results = f'\n\tdx_px: {self.dx + dx_px}\n'
+        results += f'\tdy_px: {self.dy + dy_px}\n'
+        results += f'\tDistance_px: {self.dist_px}\n'
+
+        if self.mode == 'location':
+            results += f'\n\tReference: {self.ref}\n'
+            results += f'\tBearing: {self.bearing}\n'
+            results += f'\tDistance_{self.units}: {self.dist}\n'
+            results += f'\tNew Location: {self.newLoc.x, self.newLoc.y}'
+
+        self.label.setText(results)
+
+    def update(self):
+        '''
+        Tracks current x and y distance and updates label
         '''
         geo = self.geometry()
         cur = self.cursor
@@ -245,6 +242,11 @@ class Tracker(QDialog):
         dx_px = self.getDX()
         dy_px = self.getDY()
         self.dist_px = self.getDistance(self.dx + dx_px, self.dy + dy_px)
+
+        if self.mode == 'location':
+            self.bearing = self.getBearing(self.dx + dx_px, self.dy + dy_px)
+            self.dist = self.convert(self.dist_px, self.scale)
+            self.newLoc = self.newLocation(self.ref, self.dist, self.bearing)
             
         #Check if cursor is within window boundaries
         #Only update dx, dy instance variables when border has been reached
@@ -252,52 +254,8 @@ class Tracker(QDialog):
             self.dx += dx_px
             self.dy += dy_px
             cur.setPos(center.x, center.y)
-        
-        #Constantly update label while mouse is clicked and moving
-        results = f'''
-        dx_px: {self.dx + dx_px}
-        dy_px: {self.dy + dy_px}
-        Distance_px: {self.dist_px}
-        '''
-        self.label.setText(results)
 
-    def updateForLocationMode(self):
-        '''
-        Tracks current x and y distance and updates label for location mode
-        '''
-        geo = self.geometry()
-        cur = self.cursor
-        center = self.getCenter()
-        
-        #Get current x, y, and straight line distance from center
-        dx_px = self.getDX()
-        dy_px = self.getDY()
-
-        #Update bearing, distance in pixels, distance in units, and the new location
-        self.bearing = self.getBearing(self.dx + dx_px, self.dy + dy_px)
-        self.dist_px = self.getDistance(self.dx + dx_px, self.dy + dy_px)
-        self.dist = self.convert(self.dist_px, self.scale)
-        self.newLoc = self.newLocation(self.ref, self.dist, self.bearing)
-       
-        #Check if cursor is within window boundaries
-        #Only update dx, dy instance variables when border has been reached
-        if any(x in (cur.pos().x(), cur.pos().y()) for x in [0, geo.width()-1, geo.height()-1]):
-            self.dx += dx_px
-            self.dy += dy_px
-            cur.setPos(center.x, center.y)
-        
-        #Constantly update label while mouse is clicked and moving
-        results = f'''
-        Ref Point: {self.ref}
-        dx_px: {self.dx + dx_px}
-        dy_px: {self.dy + dy_px}
-        Bearing: {self.bearing}
-        Distance_px: {round(self.dist_px, 2)}
-        Distance_{self.units}: {self.dist}
-        New Location: {self.newLoc.x, self.newLoc.y}
-        '''
-        self.label.setText(results)
-
+        self.updateLabel(dx_px, dy_px)
         
     def mousePressEvent(self, e):
         '''
@@ -347,10 +305,7 @@ class Tracker(QDialog):
         The current distance x, y, and total from the center will be added to the 
         overall distance to track current bearing, distance, and current location.
         '''
-        if self.mode == 'scale':
-            self.updateForScaleMode()
-        else:
-            self.updateForLocationMode()
+        self.update()
 
 if __name__ == '__main__':
     import sys
