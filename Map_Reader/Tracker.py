@@ -266,13 +266,13 @@ class Tracker(QDialog):
         self.cursor.setPos(center.x, center.y)
 
         #Max out mouse pointer speed
-        self.mouseController.setSpeed(20)
+        #self.mouseController.setSpeed(20)
 
         #turn mouse acceleration off
         self.mouseController.toggleAcceleration(False)
                 
         if self.hidden:
-            QApplication.setOverrideCursor(Qt.BlankCursor)
+            QApplication.setOverrideCursor(Qt.CrossCursor)
         else:
             QApplication.setOverrideCursor(Qt.CrossCursor)
     
