@@ -22,7 +22,7 @@ By: Evan Brittain,
 * [Locating Points](#Locate-Points) 
 
 **[Structures](#Structures)**
-* [Points](#Points-Structure)
+* [Point Data](#Points-Structure)
 * [Project Data](#Project-Structure) 
 
 ## Description
@@ -144,7 +144,7 @@ When the mouse is released all data will be passed back to the parent (MainWindo
 6. Starter launches instance of MainWindow using project name and reference point data
 7. Starter is hidden
 
-### <a name="Locate-Points">Finding Points:
+### <a name="Locate-Points"></a>Locating Points:
 1. User clicks 'Add Reference Point' button
 2. MainWindow creates instance of ReferenceWindow to enter and confirm data
 3. Data is confirmed from ReferenceWindow and passed back to MainWindow
