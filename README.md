@@ -1,6 +1,6 @@
 # Map Reader
 
-By: Evan Brittain, 
+By: Evan Brittain, ...Add your name
 
 **[Description](#Description)**
 
