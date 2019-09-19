@@ -13,6 +13,8 @@ By: Evan Brittain,
 * [NewProjectWizard.py](#NewProjectWizard.py)
 * [MainWindow.py](#MainWindow.py)
 * [Tracker.py](#Tracker.py)
+	* [Mouse Tracing](#Mouse-Tracing)
+	* [Locating New Point](#New-Point)
 * [Table.py](#Table.py)
 * [Windows.py](#Windows.py)
 * [MouseController.py](#MouseController.py)
@@ -74,7 +76,7 @@ If the user clicks the 'Open' button the selected folder name (project name) wil
 		bearing, distance in given units, and new location (lat, lon). Location mode also contains a more 
 		in depth label to show how data is being changed while the user traces.
 	
-**Mouse Tracing:**
+<a name="Mouse-Tracing"></a>**Mouse Tracing:**
 1. The center point of the window is found
 2. The user clicks the mouse and the cursor is repositioned to the center point
 3. Global dx, dy and local dx, dy values are set to 0
@@ -99,7 +101,7 @@ If the user clicks the 'Open' button the selected folder name (project name) wil
 	return  round(math.sqrt(dx**2  + dy**2), 4)
 	```
 
-**Locating New Point:**
+<a name="New-Point"></a>**Locating New Point:**
 1. User traces (see above)
 2. Bearing is found with global dx, dy values
 	```python 
