@@ -9,21 +9,21 @@ __**[Description](#Description)**__
 **[Demo](#Demo)**
 
  **[Overview](#Overview)**
-* [Starter.py](#Starter.py)
-* [NewProjectWizard.py](#NewProjectWizard.py)
-* [MainWindow.py](#MainWindow.py)
-* [Tracker.py](#Tracker.py)
-* [Table.py](#Table.py)
-* [Windows.py](#Windows.py)
-* [MouseController.py](#MouseController.py)
+	* [Starter.py](#Starter.py)
+	* [NewProjectWizard.py](#NewProjectWizard.py)
+	* [MainWindow.py](#MainWindow.py)
+	* [Tracker.py](#Tracker.py)
+	* [Table.py](#Table.py)
+	* [Windows.py](#Windows.py)
+	* [MouseController.py](#MouseController.py)
 
 **[Program Flow](#Program-Flow)**
-* [Creating Projects](#Projects)
-* [Locating Points](#Points) 
+	* [Creating Projects](#Projects)
+	* [Locating Points](#Points) 
 
 **[Structures](#Structures)**
-* [Points](#Points)
-* [Project Data](#Data) 
+	* [Points](#Points)
+	* [Project Data](#Data) 
 
 ## Description
 
