@@ -27,6 +27,8 @@ By: Evan Brittain,
 * [Point Data](#Points-Structure)
 * [Project Data](#Project-Structure) 
 
+**[Testing](#Testing)**
+
 ## Description
 
 Map Reader is a tool that allows users to locate the coordinates of points on a map by tracing from a reference point with their mouse.
@@ -194,3 +196,13 @@ data = {
 	'Points': list
 }
 ```
+	
+## Testing
+
+All test files are located in (./Map_Reader/Tests/). A test file is created for each class following the naming convention {classname}_test.py. Each test can be run individually using the command:
+
+	pytest <test_file>
+
+All test files within the test directory can be run using the TestRunner.py script.
+
+	python TestRunner.py
