@@ -3,8 +3,11 @@
 By: Evan Brittain, 
 
 **[Description](#Description)**
+
 **[Dependencies](#Overview)**
+
 **[Demo](#Demo)**
+
 **[Overview](#Overview)**
 * [Starter.py](#Starter.py)
 * [NewProjectWizard.py](#NewProjectWizard.py)
