@@ -9,6 +9,10 @@ class MouseController():
         #   1 - slow
         #   10 - standard
         #   20 - fast
+
+        if speed not in range(1, 21):
+            raise ValueError
+        
         set_mouse_speed = 113   # 0x0071 for SPI_SETMOUSESPEED
         ct.windll.user32.SystemParametersInfoA(set_mouse_speed, 0, speed, 0)
 
