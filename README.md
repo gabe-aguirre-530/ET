@@ -39,7 +39,7 @@ Map Reader is a tool that allows users to locate the coordinates of points on a 
 ![Demo](https://media.giphy.com/media/RJaUQoO9vMruZEolA2/giphy.gif)
 ## Overview
 
-## Starter.py
+### <a name="Starter.py"></a>Starter.py
 **StarterWindow (QDialog):** This is the top level class that is responsible for creating new projects, opening existing projects, and hiding and displaying the correct windows. When this class is instantiated it creates a directory (./Projects/) if one doesn't already exist. This directory contatins all the project folders created by the user. If the 'New' button is clicked it will instantiate the NewProjectWizard class which will walk the user through creation of a new project.
 		
 	Creation of a new project includes:
