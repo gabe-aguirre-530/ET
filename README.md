@@ -2,13 +2,13 @@
 
 By: Evan Brittain, 
 
-**[Description](#Description)**
+__**[Description](#Description)**__
 
-**[Dependencies](#Overview)**
+__**[Dependencies](#Overview)**__
 
-**[Demo](#Demo)**
+__**[Demo](#Demo)**__
 
- **[Overview](#Overview)**
+ __**[Overview](#Overview)**__
 * [Starter.py](#Starter.py)
 * [NewProjectWizard.py](#NewProjectWizard.py)
 * [MainWindow.py](#MainWindow.py)
@@ -17,11 +17,11 @@ By: Evan Brittain,
 * [Windows.py](#Windows.py)
 * [MouseController.py](#MouseController.py)
 
-**[Program Flow](#Program-Flow)**
+__**[Program Flow](#Program-Flow)**__
 * [Creating Projects](#Projects)
 * [Locating Points](#Points) 
 
-**[Structures](#Structures)**
+__**[Structures](#Structures)**__
 * [Points](#Points)
 * [Project Data](#Data) 
 
