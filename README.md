@@ -203,6 +203,12 @@ All test files are located in (./Map_Reader/Tests/). A test file is created for 
 
 	pytest <test_file>
 
-All test files within the test directory can be run using the TestRunner.py script.
+All test files within the test directory can be run using the TestRunner.py script. You can also specify which files to test with --files argument
 
-	python TestRunner.py
+	python TestRunner.py [-h] [--files FILES]
+	
+	Run All Tests:
+		python TestRunner.py
+		
+	Run Test Files:
+		python TestRunner.py --files MouseController_test.py,ReferenceWindow_test.py,...
