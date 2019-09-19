@@ -30,8 +30,10 @@ class Tracker(QDialog):
         self.hidden = hidden
         self.scale = scale
         self.units = units
+
         self.mouseController = MouseController()
         self.origMouseSpeed = self.mouseController.getSpeed()
+        self.origAcceleration = self.mouseController.getAcceleration()
 
         self.zeroVariables()
            
@@ -269,7 +271,7 @@ class Tracker(QDialog):
         #self.mouseController.setSpeed(20)
 
         #turn mouse acceleration off
-        self.mouseController.toggleAcceleration(False)
+        self.mouseController.setAcceleration(False)
                 
         if self.hidden:
             QApplication.setOverrideCursor(Qt.CrossCursor)
@@ -288,7 +290,7 @@ class Tracker(QDialog):
         self.mouseController.setSpeed(self.origMouseSpeed)
 
         #Reset mouse acceleration
-        self.mouseController.toggleAcceleration(True)
+        self.mouseController.setAcceleration(self.origAcceleration)
 
         #Call function to launch windown depending on scale or location mode
         if self.parent():

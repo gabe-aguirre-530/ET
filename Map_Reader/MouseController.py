@@ -19,8 +19,15 @@ class MouseController():
 
         return speed.value 
 
-    def toggleAcceleration(self, b):
+    def setAcceleration(self, b):
         arr = [0, 0, int(b)]
         mouse_params = (ct.c_int * len(arr))(*arr)
         set_mouse = 4   # 0x0004 for SPI_SETMOUSE
         ct.windll.user32.SystemParametersInfoA(set_mouse, 0, mouse_params, 0)
+
+    def getAcceleration(self):
+        mouse_params = (ct.c_int * 3)()
+        get_mouse = 3   # 0x0003 for SPI_GETMOUSE
+        ct.windll.user32.SystemParametersInfoA(get_mouse, 0, mouse_params, 0)
+        
+        return bool(mouse_params[2])
