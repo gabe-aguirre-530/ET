@@ -39,7 +39,7 @@ Map Reader is a tool that allows users to locate the coordinates of points on a 
 ![Demo](https://media.giphy.com/media/RJaUQoO9vMruZEolA2/giphy.gif)
 ## Overview
 
-### <u>Starter.py</u>
+## Starter.py
 **StarterWindow (QDialog):** This is the top level class that is responsible for creating new projects, opening existing projects, and hiding and displaying the correct windows. When this class is instantiated it creates a directory (./Projects/) if one doesn't already exist. This directory contatins all the project folders created by the user. If the 'New' button is clicked it will instantiate the NewProjectWizard class which will walk the user through creation of a new project.
 		
 	Creation of a new project includes:
@@ -51,17 +51,17 @@ When the user successfully creates and new project the reference point and proje
 		
 If the user clicks the 'Open' button the selected folder name (project name) will be used to create an instance of MainWindow and the openExisting flag in the MainWindow constructor will be set toTrue.
 		
-### __NewProjectWizard.py__
+### NewProjectWizard.py
 
 **NewProjectWizard (QWizard):** This class is only responsible for setting up the three pages in the new project wizard. The three pages include intro, data (created in it's own class: WizardDataPage), and conclusion. It's created with an instance of the parent window (StarterWindow) and passes all entered data (ref. point, project name) back to the parent class.
 		
 **WizardDataPage (QWizardPage):** This class is one of the pages in NewProjectWizard and is used to collect all project data entered by the user. This includes ensuring the project name entered is a valid windows folder name and latitude and longitude values are between (-90, 90) and (-180, 180).
 
-### __MainWindow.py__
+### MainWindow.py
 
 **MainWindow (QMainWindow):** This is the central point of the program where the user is able to enter a new reference point, trace the scale, locate a point, export data, and view the collected data in a table. Every window launched from this screen is a child of the MainWindow and uses MainWindow to pass all data back  and forth. The class is instantiated by passing a reference to it's parent (StarterWindow) and project name. It can also be created using the openExisting flag (False by default) which reads  data from (./Projects/{Project_Name}/project_data.json) and uses the data to set instance variables (scale, reference, units, points, createdDate, ...) and populate the table. The filemenu and central widget (Table) are defined and created in the constructor. Submenus are created within the filemenu to save, open, close, exit, export, and create new project. Each submenu is connected to a function which will be activated when clicked. Exporting data is done by creating a pandas dataframe with the self.points instance variable then calling the pandas function to export as HTML, JSON, CSV, or Excel.
 
-### __Tracker.py__
+### Tracker.py
 
 **Tracker (QDialog):** This class is responsible for tracking the distance travelled by the mouse. Tracker is instantiated by passing an instance of it's parent (MainWindow) and selecting a mode. The two modes are scale and location which tell it whether the user is tracing the scale or tracing from the reference point to a location.
 		
@@ -117,11 +117,11 @@ If the user clicks the 'Open' button the selected folder name (project name) wil
 		
 When the mouse is released all data will be passed back to the parent (MainWindow).
 
-### __Table.py__
+### Table.py
 
 **Table (QWidget):** This class is only responsible for laying out the UI elements of the parent's (MainWindow) central widget and updating the table . It creates the main table and buttons (add reference, set scale, locate point) and connects each to the approriate function in the parent's class. It updates the table with self.points passed from the parent.
 
-### __Windows.py__
+### Windows.py
 
 **ScaleWindow (QDialog):** ScaleWindow is created to confirm the data traced by Tracker. It will be displayed when the user releases the mouse from tracing. The field is populated with the pixel distance tracked and the user needs to set the actual distance and units (km, mi, ft, m). When the data is confirmed it will be passed back to the parent (MainWindow).
 		
@@ -129,13 +129,13 @@ When the mouse is released all data will be passed back to the parent (MainWindo
 			
 **LocationWindow (QDialog):** LocationWindow is created when the user has finished tracing to a new location in Tracker. The window will be displayed with fields already populated and the user will confirm each and add a description (optional). When the user clicks save the confirmed data (lat, lon, bearing, distance, description) will be passed back to the parent (MainWindow)
 
-### __MouseController.py__
+### MouseController.py
 
 **MouseController:** This class is only used to make system calls to the OS to modify mouse settings. The mouse settings it changes are speed and acceleration which are only manipulated when the user is actively tracing
 					
 ## Program Flow
 
-### __Creating Projects:__
+### Creating Projects:
 1. User clicks 'New' from Starter
 2. Starter creates instance of NewProjectWizard
 3. User enters reference point and project name in data page of NewProjectWizard
@@ -144,7 +144,7 @@ When the mouse is released all data will be passed back to the parent (MainWindo
 6. Starter launches instance of MainWindow using project name and reference point data
 7. Starter is hidden
 
-### __Finding Points:__
+### Finding Points:
 1. User clicks 'Add Reference Point' button
 2. MainWindow creates instance of ReferenceWindow to enter and confirm data
 3. Data is confirmed from ReferenceWindow and passed back to MainWindow
@@ -163,7 +163,7 @@ When the mouse is released all data will be passed back to the parent (MainWindo
 
 ## Structures
 		
-### __Point Data:__
+### Point Data:
 ```python
 self.points = [
 	{
@@ -180,7 +180,7 @@ self.points = [
 ]
 ```
 
-### __Project Data:__
+### Project Data:
 ```python
 data = {
 	'ProjectName': str,
