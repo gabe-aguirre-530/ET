@@ -86,7 +86,10 @@ If the user clicks the 'Open' button the selected folder name (project name) wil
 5. local dx and dy values are contantly being tracked from the center point
 6. User hits edge of screen
 	```python 
-	if  any(x in (cur.pos().x(), cur.pos().y()) for x in [0, geo.width()-1, geo.height()-1])
+	curLoc = {cur.pos().x(), cur.pos().y()}
+    boundaries = {0, geo.width()-1, geo.height()-1}
+
+    if curLoc.intersection(boundaries)
 	```
 7. Global dx, dy values are updated with local dx, dy values
 	```python

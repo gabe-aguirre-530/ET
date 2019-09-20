@@ -252,7 +252,10 @@ class Tracker(QDialog):
             
         #Check if cursor is within window boundaries
         #Only update dx, dy instance variables when border has been reached
-        if any(x in (cur.pos().x(), cur.pos().y()) for x in [0, geo.width()-1, geo.height()-1]):
+        curLoc = {cur.pos().x(), cur.pos().y()}
+        boundaries = {0, geo.width()-1, geo.height()-1}
+
+        if curLoc.intersection(boundaries):
             self.dx += dx_px
             self.dy += dy_px
             cur.setPos(center.x, center.y)
