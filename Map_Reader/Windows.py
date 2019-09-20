@@ -287,6 +287,6 @@ if __name__=='__main__':
     import sys
 
     app = QApplication(sys.argv)
-    window = ReferenceWindow()
+    window = ScaleWindow(100)
     sys.exit(app.exec_())
 
