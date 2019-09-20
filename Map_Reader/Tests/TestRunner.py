@@ -7,10 +7,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--files', type=str, help='Comma separated test filenames')
 args = parser.parse_args()
 
-def run_tests(tests):
-	for test in tests:
-		subprocess.Popen(f'pytest {test}', subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW).communicate()
-
 test_files = {x for x in os.listdir() if re.search(r'.*_test.py', x)}
 
 if args.files:
@@ -21,7 +17,8 @@ if args.files:
 		print('Invalid Files:', ', '.join(arg_files-test_files))
 		parser.print_help()
 	else:
-		run_tests(test_files)
+		for test in test_files:
+			subprocess.Popen(f'pytest {test}', subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW).communicate()
 
 else:
-	run_tests(test_files)
+	subprocess.Popen(f'pytest', subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW).communicate()
