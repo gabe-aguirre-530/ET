@@ -212,7 +212,7 @@ class LocationWindow(QDialog):
         h2Layout = QHBoxLayout() 
 
         self.distEdit = QLineEdit(str(self.dist))
-        self.distEdit.setValidator(QDoubleValidator(0.1, 100000000, 5)) 
+        self.distEdit.setValidator(QDoubleValidator(0, 100000000, 5)) 
         self.distEdit.textChanged.connect(self.checkFields)
         self.bearingEdit = QLineEdit(str(self.bearing))
         self.bearingEdit.setValidator(QDoubleValidator(0, 360, 5))
@@ -239,6 +239,8 @@ class LocationWindow(QDialog):
         mainLayout.addLayout(h2Layout)
         mainLayout.addWidget(self.descBox)
         mainLayout.addLayout(h3Layout)
+
+        self.mandatoryFields = [self.latEdit, self.lonEdit, self.distEdit, self.bearingEdit]
     
         self.setLayout(mainLayout)
         self.setModal(True)
@@ -248,9 +250,8 @@ class LocationWindow(QDialog):
         '''
         Check if all mandatory fields are entered
         '''
-        mandatoryFields = [self.latEdit, self.lonEdit, self.distEdit, self.bearingEdit]
 
-        if all(t.text() for t in mandatoryFields):
+        if all(t.text() for t in self.mandatoryFields):
             self.saveButton.setEnabled(True)
         else:
             self.saveButton.setEnabled(False)
@@ -270,8 +271,14 @@ class LocationWindow(QDialog):
         units = self.units
         
         #check values entered by user are correct
-        if lat > -90 and lat < 90 and lon > -180 and lon < 180:
+        upperBound = [90, 180, 10000, 360]
+        lowerBound = [-90, -180, 0.01, 0]
+        fieldVals = [lat, lon, dist, bearing]
 
+        upperCheck = all(field < limit for field, limit in zip(fieldVals, upperBound))
+        lowerCheck = all(field >= limit for field, limit in zip(fieldVals, lowerBound))
+
+        if upperCheck and lowerCheck:
             if self.parent():
                 self.parent().setLocation(lat, lon, desc, dist, bearing, units)
 
@@ -287,6 +294,6 @@ if __name__=='__main__':
     import sys
 
     app = QApplication(sys.argv)
-    window = ScaleWindow(100)
+    window = LocationWindow(38.12345, -121.12345, 100, 95, 'km')
     sys.exit(app.exec_())
 

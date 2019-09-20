@@ -1,7 +1,6 @@
 from Map_Reader.Windows import ScaleWindow
 from PyQt5 import QtCore
 import pytest
-import time
 
 @pytest.fixture
 def window():
@@ -66,6 +65,7 @@ def test_6(qtbot, window):
     Test that window is still open after erroneous data is entered
     and save is pressed
     '''
+    qtbot.addWidget(window)
     window.pixelEdit.setText(None)
     window.scaleEdit.setText(None)
 
