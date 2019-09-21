@@ -37,9 +37,13 @@ class StarterWindow(QDialog):
         self.openButton = QPushButton('Open')
         self.openButton.clicked.connect(self.open)
 
+        self.aboutButton = QPushButton('About')
+        
+
         hLayout.addWidget(self.newButton)
         hLayout.addWidget(self.openButton)
-
+        hLayout.addWidget(self.aboutButton)
+        
         mainLayout.addLayout(hLayout)
     
         self.setLayout(mainLayout)
