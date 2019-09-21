@@ -31,6 +31,8 @@ class StarterWindow(QDialog):
 
         #horizontal layout containing new and open buttons
         hLayout = QHBoxLayout()
+        self.projectTable = QTableWidget(5,1)
+
         self.newButton = QPushButton('New')
         self.newButton.clicked.connect(self.new)
 
@@ -39,11 +41,11 @@ class StarterWindow(QDialog):
 
         self.aboutButton = QPushButton('About')
         
-
+        hLayout.addWidget(self.projectTable)
         hLayout.addWidget(self.newButton)
         hLayout.addWidget(self.openButton)
         hLayout.addWidget(self.aboutButton)
-        
+
         mainLayout.addLayout(hLayout)
     
         self.setLayout(mainLayout)
