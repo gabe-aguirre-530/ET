@@ -1,6 +1,6 @@
 # Map Reader
 
-By: Evan Brittain, Ryan Swearingen ...Add your name
+By: Evan Brittain, Ryan Swearingen, Joseph Donati ...Add your name
 
 **[Description](#Description)**
 
