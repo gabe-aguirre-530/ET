@@ -64,7 +64,10 @@ class NewProjectWizard(QWizard):
         '''
         Return to starter screen when cancel is pressed
         '''
-        self.parent().starterScreen()
+        if self.parent():
+            self.parent().starterScreen()
+        else:
+            self.close()
         
 
 

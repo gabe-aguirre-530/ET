@@ -1,4 +1,5 @@
 import sys
+import os
 
 from PyQt5.QtWidgets import QAction, QMainWindow, QMessageBox, QMenu
 from PyQt5.QtCore import QDateTime, QDate
@@ -175,38 +176,44 @@ class MainWindow(QMainWindow):
         with open(f'./Projects/{self.projectName}/project_data.json', 'w+') as f:
             f.write(json.dumps(savestate, indent=2))
 
-        #QMessageBox.information(
-        #            self,
-        #            'Project Saved',
-        #            f'{self.projectName} has been successfully saved')
-
     def openFile(self):
         '''
-        Calls parent to open new project
+        Opens file dialog to select project
         '''
-        self.parent().open()
+        fileDialog = QFileDialog(self, 'Projects', './Projects')
+        fileDialog.setFileMode(QFileDialog.DirectoryOnly)
+
+        if fileDialog.exec_():
+            filename = fileDialog.selectedFiles()[0]
+            if os.path.exists(f'{filename}/project_data.json'):
+                self.openExistingProject(filename)
+
+            else:
+                QMessageBox.critical(
+                    self,
+                    'Invalid Project',
+                    f'{filename} is an invalid project')
+
 
     def openExistingProject(self, projectName):
         '''
         Populates table with existing project data from given project
         '''
-
-        if projectName != '':
-            try:
-                with open(f'{projectName}/project_data.json', 'r') as f:
-                    data = json.loads(f.read())
-            except:
-                QMessageBox.critical(
-                    self,
-                    'File Not Found',
-                    f'{projectName} is not supported')
-            else:
-                self.projectName = data['ProjectName']
-                self.createdDate = data['Created']
-                self.reference = data['Reference']
-                self.scale = data['Scale']
-                self.units = data['Units']
-                self.points = data['Points']
+        try:
+            with open(f'{projectName}/project_data.json', 'r') as f:
+                data = json.loads(f.read())
+        except:
+            QMessageBox.critical(
+                self,
+                'File Not Found',
+                f'{projectName} is not supported')
+        else:
+            self.projectName = data['ProjectName']
+            self.createdDate = data['Created']
+            self.reference = data['Reference']
+            self.scale = data['Scale']
+            self.units = data['Units']
+            self.points = data['Points']
 
         if self.points:
             self.menuExport.setEnabled(True)

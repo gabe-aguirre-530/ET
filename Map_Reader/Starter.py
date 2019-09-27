@@ -111,21 +111,15 @@ class StarterWindow(QDialog):
         '''
         Open an existing project and launch main window
         '''
-        self.hide()
-
-        filename = None
         fileDialog = QFileDialog(self, 'Projects', './Projects')
-        fileDialog.setFileMode(QFileDialog.DirectoryOnly)
-        if fileDialog.exec_() == QDialog.Accepted:
-            filename = fileDialog.selectedFiles()[0]
+        fileDialog.setFileMode(QFileDialog.DirectoryOnly)        
         
         #If a valid path is returned from file dialog screen
-        if filename:
+        if fileDialog.exec_():
+            filename = fileDialog.selectedFiles()[0]
             #Check if json data file is in selected folder
             if os.path.exists(f'{filename}/project_data.json'):
-                #close old project and open given project name
-                if self.mw:
-                    self.mw.close()
+                self.hide()
                 self.mw = MainWindow(filename, self, openExisting=True)
 
             #alert for invalid project and return to main window or starter screen
@@ -134,18 +128,7 @@ class StarterWindow(QDialog):
                     self,
                     'Invalid Project',
                     f'{filename} is an invalid project')
-                self.show()
         
-        #If cancel is pressed from filedialog main starter screen should be reopened
-        else:
-            if not self.mw:
-                self.show()
-
-            #Bug causes complete exit when pressing cancel from filedialog when opened from MainWindow
-            #if this screen is shown and hidden it wont exit completely out of application
-            else:
-                self.show()
-                self.hide()
 
     def starterScreen(self, closeMW=False):
         '''
