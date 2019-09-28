@@ -15,6 +15,7 @@ class NewProjectWizard(QWizard):
         self.setWindowTitle('New Project Wizard')
         self.button(QWizard.FinishButton).clicked.connect(self.startNewProject)
         self.button(QWizard.CancelButton).clicked.connect(self.cancel)
+        self.setModal(True)
         self.show()
 
     def createIntroPage(self):

@@ -34,10 +34,10 @@ class StarterWindow(QDialog):
         self.projectTable = QTableView()
 
         self.newButton = QPushButton('New')
-        self.newButton.clicked.connect(self.new)
+        self.newButton.clicked.connect(self.newProject)
 
         self.openButton = QPushButton('Open')
-        self.openButton.clicked.connect(self.open)
+        self.openButton.clicked.connect(self.openProject)
 
         self.aboutButton = QPushButton('About')
         
@@ -52,12 +52,11 @@ class StarterWindow(QDialog):
 
         self.show()
 
-    def new(self):
+    def newProject(self):
         '''
         Send reference point back to main window to be stored
         '''
         self.newProjectWizard = NewProjectWizard(self)
-        self.hide()
         
 
     def createProject(self, projectName, refPoint):
@@ -89,13 +88,13 @@ class StarterWindow(QDialog):
         #Create project_data.json file with new data and start main window
         else:
             defaultData = {
-            'ProjectName': projectName,
-            'Created': createdDate,
-            'LastAccessed': createdDate,
-            'Reference': refPoint,
-            'Scale': 0,
-            'Units': '',
-            'Points': []
+                'ProjectName': projectName,
+                'Created': createdDate,
+                'LastAccessed': createdDate,
+                'Reference': refPoint,
+                'Scale': 0,
+                'Units': '',
+                'Points': []
             }
 
             with open(f'./Projects/{projectName}/project_data.json', 'w+') as f:
@@ -107,12 +106,13 @@ class StarterWindow(QDialog):
                 createdDate=createdDate, 
                 parent=self)
         
-    def open(self):
+    def openProject(self):
         '''
         Open an existing project and launch main window
         '''
         fileDialog = QFileDialog(self, 'Projects', './Projects')
-        fileDialog.setFileMode(QFileDialog.DirectoryOnly)        
+        fileDialog.setFileMode(QFileDialog.DirectoryOnly)
+        fileDialog.setAttribute(Qt.WA_QuitOnClose, False)       
         
         #If a valid path is returned from file dialog screen
         if fileDialog.exec_():
@@ -120,6 +120,13 @@ class StarterWindow(QDialog):
             #Check if json data file is in selected folder
             if os.path.exists(f'{filename}/project_data.json'):
                 self.hide()
+
+                if self.mw:
+                    if self.mw.projectName == filename.split('/')[-1]:
+                        return
+                    else:
+                        self.mw.close()
+
                 self.mw = MainWindow(filename, self, openExisting=True)
 
             #alert for invalid project and return to main window or starter screen
@@ -136,6 +143,7 @@ class StarterWindow(QDialog):
         '''
         if closeMW:
             self.mw.close()
+            self.mw = None
 
         if self.newProjectWizard:
             self.newProjectWizard.close()

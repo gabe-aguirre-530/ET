@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QAction, QMainWindow, QMessageBox, QMenu
 from PyQt5.QtCore import QDateTime, QDate
 import pandas as pd
 import json
+from functools import partial
 
 import Tracker
 from Table import Table
@@ -29,7 +30,7 @@ class MainWindow(QMainWindow):
         self.menuNew = QAction("&New", self)
         self.menuNew.setShortcut("Ctrl+N")
         self.menuNew.setStatusTip('New Project')
-        self.menuNew.triggered.connect(self.newProject)
+        self.menuNew.triggered.connect(self.parent().newProject)
 
         self.menuSave = QAction("&Save", self)
         self.menuSave.setShortcut("Ctrl+S")
@@ -39,12 +40,12 @@ class MainWindow(QMainWindow):
         self.menuOpen = QAction("&Open", self)
         self.menuOpen.setShortcut("Ctrl+O")
         self.menuOpen.setStatusTip('Open File')
-        self.menuOpen.triggered.connect(self.openFile)
+        self.menuOpen.triggered.connect(self.parent().openProject)
 
         self.menuClose = QAction("&Close", self)
         self.menuClose.setShortcut("Ctrl+E")
         self.menuClose.setStatusTip('Close File')
-        self.menuClose.triggered.connect(self.closeFile)
+        self.menuClose.triggered.connect(partial(self.parent().starterScreen, closeMW=True))
 
         self.menuExit = QAction("&Exit", self)
         self.menuExit.setShortcut("Ctrl+Q")
@@ -176,25 +177,6 @@ class MainWindow(QMainWindow):
         with open(f'./Projects/{self.projectName}/project_data.json', 'w+') as f:
             f.write(json.dumps(savestate, indent=2))
 
-    def openFile(self):
-        '''
-        Opens file dialog to select project
-        '''
-        fileDialog = QFileDialog(self, 'Projects', './Projects')
-        fileDialog.setFileMode(QFileDialog.DirectoryOnly)
-
-        if fileDialog.exec_():
-            filename = fileDialog.selectedFiles()[0]
-            if os.path.exists(f'{filename}/project_data.json'):
-                self.openExistingProject(filename)
-
-            else:
-                QMessageBox.critical(
-                    self,
-                    'Invalid Project',
-                    f'{filename} is an invalid project')
-
-
     def openExistingProject(self, projectName):
         '''
         Populates table with existing project data from given project
@@ -218,21 +200,10 @@ class MainWindow(QMainWindow):
         if self.points:
             self.menuExport.setEnabled(True)
             self.table.update(self.points)
-    
-    def newProject(self):
-        '''
-        Create new project by clearing all instance variables
-        '''
-        self.parent().new()
-    
-    def closeFile(self):
-        '''
-        Return to starter screen in parent window
-        '''
-        self.parent().starterScreen(closeMW=True)
 
     def closeApplication(self):
         '''
+        Prompt user when exiting
         '''
         choice = QMessageBox.question(
             self, 
