@@ -1,7 +1,10 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QDoubleValidator
+from PyQt5.QtCore import Qt
 from geopy.distance import geodesic
 from collections import namedtuple
+
+from MouseController import MouseController
 
 #Class to confirm the scale input data
 class ScaleWindow(QDialog):
@@ -290,10 +293,87 @@ class LocationWindow(QDialog):
         '''
         self.close()
 
+class MouseSettingsWindow(QDialog):
+    def __init__(self, parent=None):
+        super(MouseSettingsWindow, self).__init__(parent)
+
+        self.mc = MouseController()
+
+        #store original settings
+        self.origSpeed = self.mc.getSpeed()
+        self.origAccel = self.mc.getAcceleration()
+
+        #create variables for updated settings
+        self.speedSetting = self.origSpeed
+        self.accelSetting = self.origAccel
+
+        self.setFixedSize(300, 150)
+        self.setWindowTitle('Mouse Settings')
+        self.setAttribute(Qt.WA_QuitOnClose, False)
+        self.initUI()
+
+    def initUI(self):
+        '''
+        Setup GUI elements of scale window
+        '''
+        mainLayout = QVBoxLayout()
+
+        #horizontal layout containing lineedits, unit selector, and label
+        hLayout = QHBoxLayout()
+        sliderLabel = QLabel('Sensitivity:')
+
+        self.sl = QSlider(Qt.Horizontal)
+        self.sl.setMinimum(1)
+        self.sl.setMaximum(20)
+        self.sl.setValue(self.origSpeed)
+        self.sl.setTickPosition(QSlider.TicksBelow)
+        self.sl.setTickInterval(5)
+        self.sl.valueChanged.connect(lambda: self.mc.setSpeed(self.sl.value()))
+
+        self.checkBox = QCheckBox('Acceleration')
+        self.checkBox.setChecked(self.origAccel)
+        self.checkBox.stateChanged.connect(lambda: self.mc.setAcceleration(self.checkBox.isChecked()))
+
+        hLayout.addWidget(sliderLabel)
+        hLayout.addWidget(self.sl)
+
+        #horizontal layout containing save and cancel buttons
+        h2Layout = QHBoxLayout()
+        self.saveButton = QPushButton('Save')
+        self.saveButton.clicked.connect(self.save)
+
+        self.cancelButton = QPushButton('Cancel')
+        self.cancelButton.clicked.connect(self.cancel)
+
+        h2Layout.addWidget(self.saveButton)
+        h2Layout.addWidget(self.cancelButton)
+
+        mainLayout.addLayout(hLayout)
+        mainLayout.addWidget(self.checkBox)
+        mainLayout.addLayout(h2Layout)
+    
+        self.setLayout(mainLayout)
+        self.setModal(True)
+        self.show()
+
+    def save(self):
+        '''
+        Exit window with updated mouse settings
+        '''
+        self.close()
+
+    def cancel(self):
+        '''
+        Set mouse and acceleration back to original settings and close window
+        '''
+        self.mc.setSpeed(self.origSpeed)
+        self.mc.setAcceleration(self.origAccel)
+        self.close()
+
 if __name__=='__main__':
     import sys
 
     app = QApplication(sys.argv)
-    window = LocationWindow(38.12345, -121.12345, 100, 95, 'km')
+    window = MouseSettingsWindow()
     sys.exit(app.exec_())
 

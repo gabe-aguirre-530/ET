@@ -71,12 +71,22 @@ class MainWindow(QMainWindow):
         self.menuExport.addAction(self.exportHTML)
         self.exportHTML.triggered.connect(self.exportToHTML)
 
+        self.settingsMenu = menubar.addMenu('Settings')
+
+        self.menuMouseSettings = QAction("Mouse Settings", self)
+        self.menuMouseSettings.setShortcut("Ctrl+M")
+        self.menuMouseSettings.setStatusTip('Mouse Settings')
+        self.menuMouseSettings.triggered.connect(self.launchMouseSettings)
+
         self.fileMenu.addAction(self.menuNew)
         self.fileMenu.addAction(self.menuOpen)
         self.fileMenu.addAction(self.menuSave)
         self.fileMenu.addMenu(self.menuExport)
         self.fileMenu.addAction(self.menuClose)
         self.fileMenu.addAction(self.menuExit)
+
+        self.settingsMenu.addAction(self.menuMouseSettings)
+
         self.setCentralWidget(self.table)
 
         #Open existing json file containing all data
@@ -159,6 +169,12 @@ class MainWindow(QMainWindow):
         self.table.update(self.points)
         self.menuExport.setEnabled(True)
         self.saveFile()
+
+    def launchMouseSettings(self):
+        '''
+        Launches instance of MouseSettingsWindow from setting menu
+        '''
+        self.mouseSettingsWindow = MouseSettingsWindow()
 
     def saveFile(self):
         '''
