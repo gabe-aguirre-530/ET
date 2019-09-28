@@ -1,9 +1,9 @@
 import os
 
-from PyQt5.QtCore import Qt, QDateTime
+from PyQt5.QtCore import Qt, QDateTime, QStringListModel
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
-
+from StarterTable import StarterTable
 import json
 
 from MainWindow import MainWindow
@@ -12,7 +12,7 @@ from NewProjectWizard import NewProjectWizard
 class StarterWindow(QDialog):
     def __init__(self):
         super(StarterWindow, self).__init__()
-        self.setFixedSize(300, 100)
+        self.setFixedSize(300, 150)
         self.setWindowTitle('Welcome')
         self.mw = None
         self.newProjectWizard = None
@@ -31,7 +31,8 @@ class StarterWindow(QDialog):
 
         #horizontal layout containing new and open buttons
         hLayout = QHBoxLayout()
-        self.projectTable = QTableView()
+        self.projectTable = StarterTable(self)
+        
 
         self.newButton = QPushButton('New')
         self.newButton.clicked.connect(self.newProject)
