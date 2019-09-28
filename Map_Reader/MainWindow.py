@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         self.points = []
         self.savedPoints = []
         self.createdDate = createdDate
+        self.api = None
         
         menubar = self.menuBar()
         self.fileMenu = menubar.addMenu('File')
@@ -170,6 +171,27 @@ class MainWindow(QMainWindow):
         self.menuExport.setEnabled(True)
         self.saveFile()
 
+    def setAPI(self, api_key):
+        '''
+        Set api key with key provided from APIKeyWindow
+        '''
+        self.api = api_key
+    
+        self.saveFile()
+        self.mapWindow = MapWindow(self.api, self.reference, self.points)
+
+    def plotPoints(self):
+        '''
+        Launch instance of MapWindow to plot point on google maps
+        '''
+        if not self.points:
+            return
+
+        if self.api:
+            self.mapWindow = MapWindow(self.api, self.reference, self.points)
+        else:
+            self.apiKeyWindow = APIKeyWindow(self)
+
     def launchMouseSettings(self):
         '''
         Launches instance of MouseSettingsWindow from setting menu
@@ -187,7 +209,8 @@ class MainWindow(QMainWindow):
             'Reference': self.reference,
             'Scale': self.scale,
             'Units': self.units,
-            'Points': self.points
+            'Points': self.points,
+            'APIKey': self.api
         }
 
         with open(f'./Projects/{self.projectName}/project_data.json', 'w+') as f:
@@ -206,12 +229,13 @@ class MainWindow(QMainWindow):
                 'File Not Found',
                 f'{projectName} is not supported')
         else:
-            self.projectName = data['ProjectName']
-            self.createdDate = data['Created']
-            self.reference = data['Reference']
-            self.scale = data['Scale']
-            self.units = data['Units']
-            self.points = data['Points']
+            self.projectName = data.get('ProjectName')
+            self.createdDate = data.get('Created')
+            self.reference = data.get('Reference')
+            self.scale = data.get('Scale')
+            self.units = data.get('Units')
+            self.points = data.get('Points')
+            self.api = data.get('APIKey')
 
         if self.points:
             self.menuExport.setEnabled(True)

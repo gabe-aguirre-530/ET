@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QDoubleValidator
 from PyQt5.QtCore import Qt
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from geopy.distance import geodesic
 from collections import namedtuple
+import webbrowser
 
 from MouseController import MouseController
 
@@ -370,10 +372,173 @@ class MouseSettingsWindow(QDialog):
         self.mc.setAcceleration(self.origAccel)
         self.close()
 
+class MapWindow(QDialog):
+    def __init__(self, api_key, ref, points):
+        super(MapWindow, self).__init__()
+        
+        self.api = api_key
+        self.ref = ref
+        self.points = points
+
+        self.setFixedSize(1080, 768)
+        self.setWindowTitle('Map')
+        self.setModal(True)
+        self.setAttribute(Qt.WA_QuitOnClose, False)
+        try:
+            self.initUI()
+        except:
+            QMessageBox.critical(
+                self,
+                'Invalid Key',
+                f'{self.api} is an invalid key'
+            )	
+        self.show()
+
+    def initUI(self):
+        '''
+        Setup GUI elements of scale window
+        '''
+        layout = QVBoxLayout()
+
+        #Create point string to hold all JS point variables
+        point_str = ''
+
+        #Define center point of map and set to reference point
+        center = {'lat': self.ref[0], 'lng': self.ref[1]}
+        point_str += self.addMarker(center, 'green')
+
+        #Add all traced points to JS point variables
+        for p in self.points:
+            point = {'lat': p['Latitude'], 'lng': p['Longitude']}
+            point_str += self.addMarker(point, 'red')
+        
+        mapView = QWebEngineView()
+        mapView.setHtml(f'''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Simple Map</title>
+            <meta name="viewport" content="initial-scale=1.0">
+            <meta charset="utf-8">
+            <style>
+            /* Always set the map height explicitly to define the size of the div
+            * element that contains the map. */
+            #map {{
+                height: 100%;
+            }}
+            /* Optional: Makes the sample page fill the window. */
+            html, body {{
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }}
+            </style>
+        </head>
+        <body>
+            <div id="map"></div>
+            <script>
+            var map;
+            function initMap() {{
+                map = new google.maps.Map(document.getElementById('map'), {{
+                center: {center},
+                zoom: 10
+                }});
+                {point_str}
+            }}
+            </script>
+            <script src="https://maps.googleapis.com/maps/api/js?key={self.api}&callback=initMap"
+            async defer></script>
+        </body>
+        </html>
+        ''')
+ 
+        layout.addWidget(mapView)
+        self.setLayout(layout)
+
+    def addMarker(self, point, color):
+        '''
+        Add point to map by converting to JS format
+        '''
+        marker = f'''
+        var marker = new google.maps.Marker({{
+            icon : 'http://maps.google.com/mapfiles/ms/icons/{color}-dot.png',
+            position: {point},
+            map: map,
+            title: 'Reference Point'
+        }});
+        '''
+        return marker
+
+class APIKeyWindow(QDialog):
+    def __init__(self, parent=None):
+        super(APIKeyWindow, self).__init__(parent)
+
+        self.setFixedSize(350, 100)
+        self.setWindowTitle('Enter API Key')
+        self.initUI()
+
+    def initUI(self):
+        '''
+        Setup GUI elements of scale window
+        '''
+        mainLayout = QVBoxLayout()
+
+        hLayout = QHBoxLayout()
+        self.apiKeyEdit = QLineEdit()
+        self.apiKeyEdit.setPlaceholderText('Google API Key')
+        self.apiKeyEdit.textChanged.connect(self.checkFields)
+
+        self.helpButton = QPushButton('?')
+        self.helpButton.setMaximumWidth(25)
+        self.helpButton.clicked.connect(lambda: webbrowser.open('https://developers.google.com/maps/documentation/javascript/get-api-key'))
+
+        hLayout.addWidget(self.apiKeyEdit)
+        hLayout.addWidget(self.helpButton)
+
+        #horizontal layout containing save and cancel buttons
+        h2Layout = QHBoxLayout()
+        self.saveButton = QPushButton('Save')
+        self.saveButton.clicked.connect(self.save)
+
+        self.cancelButton = QPushButton('Cancel')
+        self.cancelButton.clicked.connect(self.cancel)
+
+        h2Layout.addWidget(self.saveButton)
+        h2Layout.addWidget(self.cancelButton)
+
+        mainLayout.addLayout(hLayout)
+        mainLayout.addLayout(h2Layout)
+    
+        self.setLayout(mainLayout)
+        self.setModal(True)
+        self.show()
+
+    def checkFields(self):
+        '''
+        Check if all mandatory fields are entered
+        '''
+        if self.apiKeyEdit.text():
+            self.saveButton.setEnabled(True)
+
+    def save(self):
+        '''
+        Send scale and unit values entered by user back to mouse tracker
+        screen when save button is clicked.
+        '''
+        self.parent().setAPI(self.apiKeyEdit.text())
+        self.close()
+
+    def cancel(self):
+        '''
+        Return to mouse tracker screen if cancel button is clicked
+        '''
+        self.close()
+    
+
 if __name__=='__main__':
     import sys
 
     app = QApplication(sys.argv)
-    window = MouseSettingsWindow()
+    window = APIKeyWindow()
     sys.exit(app.exec_())
 

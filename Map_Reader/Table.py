@@ -52,10 +52,15 @@ class Table(QWidget):
         self.locateButton = QPushButton('Locate Point')
         self.locateButton.clicked.connect(self.parent().locationTracker)
 
+        #Add Plot button and connect it to plotPoints() in MainWindow to launch window
+        self.plotButton = QPushButton('Plot')
+        self.plotButton.clicked.connect(self.parent().plotPoints)
+
         #Add all button to horizontal layout
         hLayout.addWidget(self.addRefButton)
         hLayout.addWidget(self.setScaleButton)
         hLayout.addWidget(self.locateButton)
+        hLayout.addWidget(self.plotButton)
 
         #Create main layout and add all table and button sublayouts
         mainLayout = QVBoxLayout()
