@@ -6,6 +6,7 @@ from PyQt5.QtCore import QDateTime, QDate
 import pandas as pd
 import json
 from functools import partial
+import requests
 
 import Tracker
 from Table import Table
@@ -184,7 +185,15 @@ class MainWindow(QMainWindow):
         '''
         Launch instance of MapWindow to plot point on google maps
         '''
-        if not self.points:
+        #Test if network is connected before prompting for api key or launching mapwindow
+        try:
+            requests.get('https://developers.google.com/maps/documentation/javascript/get-api-key', timeout=1)
+        except:
+            QMessageBox.critical(
+                self,
+                'Network Error',
+                f'No Internet Connection'
+            )
             return
 
         if self.api:

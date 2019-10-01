@@ -384,14 +384,8 @@ class MapWindow(QDialog):
         self.setWindowTitle('Map')
         self.setModal(True)
         self.setAttribute(Qt.WA_QuitOnClose, False)
-        try:
-            self.initUI()
-        except:
-            QMessageBox.critical(
-                self,
-                'Invalid Key',
-                f'{self.api} is an invalid key'
-            )	
+        self.initUI()
+
         self.show()
 
     def initUI(self):
