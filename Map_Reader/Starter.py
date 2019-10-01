@@ -64,8 +64,7 @@ class StarterWindow(QDialog):
         '''
         Creates a new project and launch main window
         '''
-        #Need to close mainwindow if new project was selected from that screen
-
+        self.hide()
         self.newProjectWizard.close()
 
         if self.mw:
