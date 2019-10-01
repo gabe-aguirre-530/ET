@@ -399,13 +399,13 @@ class MapWindow(QDialog):
 
         #Define center point of map and set to reference point
         center = {'lat': self.ref[0], 'lng': self.ref[1]}
-        point_str += self.addMarker(center, 'green')
+        point_str += self.addMarker(center, 'green', None, None, 'Reference')
 
         #Add all traced points to JS point variables
-        for p in self.points:
+        for i, p in enumerate(self.points):
             point = {'lat': p['Latitude'], 'lng': p['Longitude']}
-            point_str += self.addMarker(point, 'red')
-        
+            point_str += self.addMarker(point, 'red', p['Date'], p['Description'], i)
+
         mapView = QWebEngineView()
         mapView.setHtml(f'''
         <!DOCTYPE html>
@@ -449,19 +449,52 @@ class MapWindow(QDialog):
         layout.addWidget(mapView)
         self.setLayout(layout)
 
-    def addMarker(self, point, color):
+    def addMarker(self, point, color, date , desc, pid):
         '''
         Add point to map by converting to JS format
         '''
+        contentString = ''
+        if desc:
+            contentString = f'''
+                var contentString = '<div id="content">'+
+                    '<div id="siteNotice">'+
+                    '</div>'+
+                    '<h1<b>{pid}</b></h1>'+
+                    '<div id="bodyContent">'+
+                    '<p> {desc}<br><br>last visited: {date}.</p>'+
+                    '</div>'+
+                    '</div>';
+                '''
+        else:
+            contentString = f'''
+            var contentString = '<div id="content">'+
+                    '<div id="siteNotice">'+
+                    '</div>'+
+                    '<h1><b>{pid}</b></h1>'+
+                    '<div id="bodyContent">'+
+                    '<p>(last visited: {date}).</p>'+
+                    '</div>'+
+                    '</div>';
+            '''       
         marker = f'''
-        var marker = new google.maps.Marker({{
+        var marker{pid} = new google.maps.Marker({{
             icon : 'http://maps.google.com/mapfiles/ms/icons/{color}-dot.png',
             position: {point},
             map: map,
             title: 'Reference Point'
         }});
         '''
-        return marker
+        infoWindow = f'''
+        var infowindow{pid} = new google.maps.InfoWindow({{
+          content: contentString
+        }});
+        '''
+        listener = f'''
+        marker{pid}.addListener('click', function() {{
+          infowindow{pid}.open(map, marker{pid});
+        }});
+        '''
+        return contentString + marker + infoWindow + listener
 
 class APIKeyWindow(QDialog):
     def __init__(self, parent=None):
