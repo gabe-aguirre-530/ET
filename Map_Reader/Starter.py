@@ -9,6 +9,30 @@ import json
 from MainWindow import MainWindow
 from NewProjectWizard import NewProjectWizard
 
+'''
+About Window Class Containing Info About Project
+'''
+class AboutWindow(QDialog):
+    def __init__(self, dummy):
+        super(AboutWindow, self).__init__()
+        self.setFixedSize(240,180)
+        self.setWindowTitle('About This Project')
+
+        self.initUI()
+    
+    def initUI(self):
+        aboutlayout = QVBoxLayout() #Why can we not add this as class member?  self.aboutlayout = QVBoxLayout() doesn't work...
+        self.textbox = QLabel()
+        self.textbox.setAlignment(Qt.AlignLeft)
+        self.textbox.setWordWrap(True)
+        self.textbox.setText('This project is was made by Evan Brittain, Gabriel Aguirre, Ryan Swearingen, Randall Plant, and Blake Carlisle.  More to follow...')
+        aboutlayout.addWidget(self.textbox)
+        self.setLayout(aboutlayout)
+        self.show()
+
+'''
+Main Window
+'''
 class StarterWindow(QDialog):
     def __init__(self):
         super(StarterWindow, self).__init__()
@@ -16,6 +40,7 @@ class StarterWindow(QDialog):
         self.setWindowTitle('Welcome')
         self.mw = None
         self.newProjectWizard = None
+        self.aboutWindow = None
 
         #Create main projects directory
         if not os.path.exists('./Projects'):
@@ -41,6 +66,7 @@ class StarterWindow(QDialog):
         self.openButton.clicked.connect(self.openProject)
 
         self.aboutButton = QPushButton('About')
+        self.aboutButton.clicked.connect(self.aboutProject)
         
         mainLayout.addWidget(self.projectTable)
         hLayout.addWidget(self.newButton)
@@ -149,6 +175,12 @@ class StarterWindow(QDialog):
             self.newProjectWizard.close()
 
         self.show()
+
+    def aboutProject(self):
+        '''
+        Show About Screen
+        '''
+        self.aboutScreen = AboutWindow(self) #Passes an invisible argument after self??? Caught with dummy parameter in __init__ of class
 
 if __name__ == '__main__':
 
