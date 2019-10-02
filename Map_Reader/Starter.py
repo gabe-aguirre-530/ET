@@ -12,7 +12,7 @@ from NewProjectWizard import NewProjectWizard
 class StarterWindow(QDialog):
     def __init__(self):
         super(StarterWindow, self).__init__()
-        self.setFixedSize(300, 150)
+        self.setFixedSize(300, 200)
         self.setWindowTitle('Welcome')
         self.mw = None
         self.newProjectWizard = None

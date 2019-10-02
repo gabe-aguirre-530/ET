@@ -3,8 +3,8 @@ from PyQt5.QtCore import (QDate, QDateTime, QRegExp, QSortFilterProxyModel, Qt,
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import *
 import random
-
-PName = range(5)
+import os
+PName = range(1)
 class StarterTable(QWidget):
     def __init__(self, parent):
         super(StarterTable, self).__init__(parent)
@@ -15,7 +15,13 @@ class StarterTable(QWidget):
         #Create and define columns in table
         model = QStandardItemModel(0, 1, self)
         model.setHeaderData(0, Qt.Horizontal, "Project Name")
-        
+
+        subfolders = [f.name for f in os.scandir('./Projects') if f.is_dir() ]
+        #subfolders = ['a', 'b', 'c']
+        #lengthS = len(subfolders)
+        for i in range(len(subfolders)):
+            model.insertRow(i)
+            model.setData(model.index(i,0), subfolders[i])
 
         self.model.setSourceModel(model)
 
